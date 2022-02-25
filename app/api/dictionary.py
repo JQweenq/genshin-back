@@ -5,10 +5,10 @@ from app.tables import Dictionary as DictionaryDB
 class Dictionary(Resource):
 
     @staticmethod
-    def post() -> (dict, int):
-        dictionary = DictionaryDB.query.filter_by()
+    def get() -> (dict, int):
+        dictionary = DictionaryDB.query.filter().all()
         if dictionary is not None:
-            return dictionary, 200
+            return [item.as_dict() for item in dictionary], 200
         return {
                    'message': 'Нам очень жаль.'
                }, 404

@@ -6,17 +6,10 @@ from app.tables import Characters as CharactersDB
 class Characters(Resource):
 
     @staticmethod
-    def post() -> (dict, int):
-        characters = CharactersDB
-        print(characters)
+    def get() -> (dict, int):
+        characters: list = CharactersDB.query.filter()
         if characters is not None:
-            return jsonify({
-                'id': characters.id,
-                'name': characters.name,
-                'rarity': characters.rarity,
-                'edited': characters.edited,
-                'created': characters.created,
-                   }), 200
+            return [item.as_dict() for item in characters], 200
         return {
                    'message': 'Не найдено ни одного персонажа.'
                }, 404

@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from sqlalchemy.exc import IntegrityError
 
-from app.tables import User
+from app.tables import Users
 
 
 
@@ -42,7 +42,7 @@ class Login(Resource):
     def post() -> (dict, int):
         args = logParser.parse_args()
 
-        user = User.query.filter_by(email=args['email']).first()
+        user = Users.query.filter_by(email=args['email']).first()
 
         if user is not None and \
                 user.hash is not None and \

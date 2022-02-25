@@ -2,7 +2,6 @@ from flask import Blueprint
 from flask_restful import Api
 
 from app.api.auth import Registration, Login
-from app.api.character import Character
 from app.api.characters import Characters
 from app.api.dictionary import Dictionary
 from app.api.gebets import Gebets
@@ -15,6 +14,5 @@ rest: Api = Api(api)
 rest.add_resource(Registration, '/register')
 rest.add_resource(Login, '/login')
 rest.add_resource(Characters, '/characters')
-rest.add_resource(Character, '/character')
 rest.add_resource(Dictionary, '/dictionary')
 rest.add_resource(Gebets, '/gebets')
