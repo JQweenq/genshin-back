@@ -11,4 +11,4 @@ Dictionary.add(Dictionary('Josty', 'Джости', 'no name', 'Josty'))
 Gebets.add(Gebets('Josty', '1.0'))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='api-genshin-journey.herokuapp.com')
