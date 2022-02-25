@@ -10,6 +10,7 @@ def createApp(configType: str) -> Flask:
     app: Flask = Flask(__name__)
     # setup config
     app.config.from_object(config[configType])
+    config[configType].init_app(app)
     # setup extensions
     setupExtensions(app)
     # install blueprints

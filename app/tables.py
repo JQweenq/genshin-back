@@ -215,8 +215,8 @@ class Dictionary(db.Model, BaseModel):
         self.SUBINF = SUBINF
         self.ORIGINAL = ORIGINAL
 
-class Gebets(db.Model, BaseModel):
-    __tablename__ = 'GEBETS'
+class Wishes(db.Model, BaseModel):
+    __tablename__ = 'WISHES'
 
     ID: db.Column = db.Column(db.Integer, primary_key=True, autoincrement=True)
     NAME: db.Column = db.Column(db.String)
