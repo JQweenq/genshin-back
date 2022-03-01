@@ -1,6 +1,9 @@
 from flask_restful import Resource
-from app.tables import Wishes as WishesDB
+from app.tables import Wishe as WishesDB
 
+deleteParser: reqparse.RequestParser = reqparse.RequestParser()
+
+deleteParser.add_argument('id', type=int, required=True)
 
 class Wishes(Resource):
 
@@ -12,3 +15,19 @@ class Wishes(Resource):
         return {
                    'message': 'Мы искали под каждым камнем, но для нас это, как игла в стоге сена.'
                }, 404
+
+    @staticmethod
+    def delete():
+        args: dict = deleteParser.parse_args()
+
+        character = Character.query.filter(Character.id == args['id']).first()
+
+        try:
+            Character.delete(character)
+        except:
+            return {
+                       'message': 'id do not found'
+                   }, 404
+        return {
+                   'message': 'Success'
+               }, 200

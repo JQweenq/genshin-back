@@ -1,17 +1,20 @@
-from dotenv import load_dotenv
 from app import createApp
 from app.extensions import db
-from app.tables import Users, Characters, Dictionary, Wishes
+from app.tables import User, Character, Word, Wishe
 
-load_dotenv()
 
-app = createApp('dev')
+app = createApp('prod')
 db.app = app
 db.create_all()
-Users.add(Users('admin', 'admin', 'admin@example.com', True))
-Characters.add(Characters('Josty'))
-Dictionary.add(Dictionary('Josty', 'Джости', 'no name', 'Josty'))
-Wishes.add(Wishes('Josty', '1.0'))
+
+# if (User.query.filter(User.id == 1).first() == []) or \
+#         (Character.query.filter(Character.id == 1).first() == []) or \
+#         (Word.query.filter(Word.id == 1).first() == []) or \
+#         (Wishe.query.filter(Wishe.id == 1).first() == []):
+User.add(User('admin', 'admin', 'admin@example.com', True))
+Character.add(Character('Джости', 5, 'Josty', 'Josty Qweenq', ))
+Word.add(Word('Josty', 'Джости',  'no name', 'Josty'))
+Wishe.add(Wishe('Josty', '1.0'))
 
 if __name__ == "__main__":
     app.run()

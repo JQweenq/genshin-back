@@ -1,7 +1,5 @@
 import datetime
 
-
-
 class Config:
     __abstract__ = True
 
@@ -54,12 +52,15 @@ class Test(Config):
 
 
 class Prod(Config):
+    '''UNIX OS'''
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     @classmethod
     def init_app(cls, app):
         print('THIS APP IS IN PROD MODE')
 
 config = {
     'dev': Dev,
-    'Test': Test,
+    'test': Test,
     'prod': Prod
 }

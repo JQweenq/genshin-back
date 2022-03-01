@@ -1,0 +1,5 @@
+__pycache__/
+debug.log
+pip-log.txt
+pip-delete-this-directory.txt
+.env

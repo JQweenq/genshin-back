@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Docs</title>
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
 <div class="wrapper">
@@ -10,18 +11,78 @@
         <nav>
             <a href="login">Sign In</a>
             <a href="register">Sigh Up</a>
+            <a href="#characters">Characters</a>
+            <a href="#dictionary">Dictionary</a>
+            <a href="#wishes">Wishes</a>
+            <a href="#register">Register</a>
+            <a href="#login">Login</a>
         </nav>
     </header>
     <main>
-        <p>Тип API: статический))) рест</p>
-        Получить список персонажей: './api/characters' <a href="api/characters">Go</a></br>
-        Получить список слов: './api/dictionary' <a href="api/dictionary">Go</a></br>
-        Получить список молитв: './api/wishes' <a href="api/wishes">Go</a></br>
+        <h2 id="characters">Characters</h2>
+        <h3>./api/characters <a href="./api/characters">Go</a></h3>
+        <h4>GET</h4>
+        <p>Получить список персонажей</p>
+        <code>
+            {
+                FROM?: number,
+                TO?: number
+            }
+        </code>
+        <h4>POST</h4>
+        <p>Создать персонажа</p>
+        <h4>DELETE</h4>
+        <p>Удалить персонажа</p>
+        <h4>PATCH</h4>
+        <p>Изменить персонажа</p>
+        <hr>
+        <h2 id="dictionary">Dictionary</h2>
+        <h3>/api/dictionary <a href="./api/dictionary">Go</a></h3>
+        <h4>GET</h4>
+        <p>Получить список слов</p>
+        <code>
+            {
+                FROM?: number,
+                TO?: number
+            }
+        </code>
+        <h4>POST</h4>
+        <p>Создать слово</p>
+        <h4>DELETE</h4>
+        <p>Удалить слово</p>
+        <h4>PATCH</h4>
+        <p>Изменить слово</p>
+        <hr>
+        <h2 id="wishes">Wishes</h2>
+        <h3>./api/wishes <a href="./api/wishes">Go</a></h3>
+        <h4>GET</h4>
+        <p>Получить список молитв</p>
+        <code>
+            {
+                FROM?: number,
+                TO?: number
+            }
+        </code>
+        <h4>POST</h4>
+        <p>Создать молитву</p>
+        <h4>DELETE</h4>
+        <p>Удалить молитву</p>
+        <h4>PATCH</h4>
+        <p>Изменить молитву</p>
+        <hr>
+        <h2 id="register">Register</h2>
+        <h3>./api/register <a href="./api/register">Go</a></h3>
+        <h4>POST</h4>
+        <h2 id="login">Login</h2>
+        <h3>./api/login <a href="./api/login">Go</a></h3>
+        <h4>POST</h4>
     </main>
     <footer>
-        <h4>Contact:</h4>
-        <p>Github: <a href="https://github.com/JQweenq">JQweenq</a></p>
-        <p>Discord: Josty#0626</p>
+        <div>
+            <h4>Contact:</h4>
+            <p>Github: <a href="https://github.com/JQweenq">JQweenq</a></p>
+            <p>Discord: Josty#0626</p>
+        </div>
     </footer>
 </div>
 </body>
