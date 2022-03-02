@@ -1,4 +1,9 @@
 __pycache__/
 debug.log
 pip-log.txt
+<<<<<<< HEAD
 pip-delete-this-directory.txt
+=======
+pip-delete-this-directory.txt
+.env
+>>>>>>> 64dd253e2b322b471e8605bb90912ae30544431f

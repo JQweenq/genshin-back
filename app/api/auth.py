@@ -1,13 +1,9 @@
-import flask_restful
-from flask import Blueprint
-from flask_restful import Resource, reqparse, Api
+from flask_restful import Resource, reqparse
 from sqlalchemy.exc import IntegrityError
 
 from app.tables import User
 
-api: Blueprint = Blueprint('api', __name__)
 
-rest = Api(api)
 
 regParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -29,7 +25,7 @@ class Registration(Resource):
 
         try:
             user = User(args['username'], args['email'])
-            user.hash_password(args['password'])
+            user.password(args['password'])
             user.add(user)
             return {
                        'message': 'Аккаунт создан'
@@ -60,7 +56,3 @@ class Login(Resource):
         return {
                    'message': 'Введен не правильный логин или пароль'
                }, 401
-
-
-rest.add_resource(Registration, '/reg')
-rest.add_resource(Login, '/login')
