@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from app.tables import Word as DictionaryDB
+from app.tables import Word
 
 deleteParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -9,7 +9,7 @@ class Dictionary(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        dictionary = DictionaryDB.query.filter().all()
+        dictionary = Word.query.filter().all()
         if dictionary is not None:
             return [item.as_dict() for item in dictionary], 200
         return {
@@ -20,10 +20,10 @@ class Dictionary(Resource):
     def delete():
         args: dict = deleteParser.parse_args()
 
-        character = Character.query.filter(Character.id == args['id']).first()
+        character = Word.query.filter(Word.id == args['id']).first()
 
         try:
-            Character.delete(character)
+            Word.delete(character)
         except:
             return {
                        'message': 'id do not found'

@@ -53,11 +53,14 @@ class Characters(Resource):
 
     @staticmethod
     def post() -> (dict, int):
-        '''not work yet'''
         args: dict = postParser.parse_args()
-        character = Character()
-        Character.update(character.setValues(args))
-
+        character = Character(_dict=args)
+        try:
+            Character.update(character)
+        except:
+            return {
+                       'message': 'я хз че'
+                   }, 400
         return {
                    'message': 'Success'
                }, 200
@@ -84,7 +87,8 @@ class Characters(Resource):
         args: dict = patchParser.parse_args()
 
         character = Character.query.filter(Character.id == args['id']).first()
-        character.setValues(args)
+        newCharacter = Character(_dict=args)
+        character.update(newCharacter)
 
         return {
                    'message': 'success'

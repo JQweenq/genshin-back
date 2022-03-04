@@ -187,21 +187,28 @@ class Character(db.Model, BaseModel):
     protrait: str = db.Column(db.String)
     description: str = db.Column(db.String)
 
+    def __init__(self, name: str = None, rarity: int = None, name_en: str = None, full_name: str = None, card: str = None, weapon: str = None, eye: str = None, sex: str = None, birthday: str = None, region: str = None, affiliation: str = None, protrait: str = None, description: str = None, _dict: dict = None) -> None:
 
-    def __init__(self, name: str = None, rarity: int = None, name_en: str = None, full_name: str = None, card: str = None, weapon: str = None, eye: str = None, sex: str = None, birthday: str = None, region: str = None, affiliation: str = None, protrait: str = None, description: str = None) -> None:
-        self.name = name
-        self.rarity = rarity
-        self.name_en = name_en
-        self.full_name = full_name
-        self.card = card
-        self.weapon = weapon
-        self.eye = eye
-        self.sex = sex
-        self.birthday = birthday
-        self.region = region
-        self.affiliation = affiliation
-        self.protrait = protrait
-        self.description = description
+        if _dict is not None:
+            for key in _dict.keys():
+                if _dict[key] is not None:
+                    self.__setattr__(key, _dict[key])
+
+        else:
+
+            self.name = name
+            self.rarity = rarity
+            self.name_en = name_en
+            self.full_name = full_name
+            self.card = card
+            self.weapon = weapon
+            self.eye = eye
+            self.sex = sex
+            self.birthday = birthday
+            self.region = region
+            self.affiliation = affiliation
+            self.protrait = protrait
+            self.description = description
 
 
     def setValues(self, args: dict) -> None:

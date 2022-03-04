@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from app.tables import Wishe, Character
+from app.tables import Wishe
 
 deleteParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -20,10 +20,10 @@ class Wishes(Resource):
     def delete():
         args: dict = deleteParser.parse_args()
 
-        character = Character.query.filter(Character.id == args['id']).first()
+        character = Wishe.query.filter(Wishe.id == args['id']).first()
 
         try:
-            Character.delete(character)
+            Wishe.delete(character)
         except:
             return {
                        'message': 'id do not found'
