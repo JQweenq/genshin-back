@@ -5,7 +5,10 @@ from app.tables import User, Character, Word, Wishe
 
 app = createApp('prod')
 db.app = app
-db.create_all()
+try:
+    db.create_all()
+except:
+    print("rrr")
 
 # if (User.query.filter(User.id == 1).first() == []) or \
 #         (Character.query.filter(Character.id == 1).first() == []) or \
