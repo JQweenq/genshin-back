@@ -1,6 +1,14 @@
 from flask_restful import Resource, reqparse
 from app.tables import Character
 
+getParser: reqparse.RequestParser = reqparse.RequestParser()
+
+postParser.add_argument('from', type=int)
+postParser.add_argument('to', type=int)
+postParser.add_argument('one', type=int)
+
+
+
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
 postParser.add_argument('id', type=int)
@@ -44,12 +52,19 @@ class Characters(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        characters: list = Character.query.filter()
-        if characters is not None:
-            return [item.as_dict() for item in characters], 200
-        return {
-                   'message': 'Не найдено ни одного персонажа.'
-               }, 404
+
+        if args['one'] is not None:
+            character = Character.query.filter(Character.id == args['one'])
+
+            return character.as_dict(), 200
+        else:
+
+            characters: list = Character.query.filter(Character.id > args['to']).filter(Character.id < args['from'])
+            if characters is not None:
+                return [item.as_dict() for item in characters], 200
+            return {
+                       'message': 'Не найдено ни одного персонажа.'
+                   }, 404
 
     @staticmethod
     def post() -> (dict, int):

@@ -146,12 +146,11 @@ class User(db.Model, BaseModel):
 
     username: str = db.Column(db.String, nullable=False)
     password: str = db.Column(db.String(128), nullable=False)
-    email: str = db.Column(db.String, nullable=False) # , unique=True
+    email: str = db.Column(db.String, nullable=False, unique=True)
     is_admin: bool = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, username: str, password: str, email: str, is_admin: bool) -> None:
+    def __init__(self, username: str, email: str, is_admin: bool = None) -> None:
         self.username = username
-        self.password = password
         self.email = email
         self.is_admin = is_admin
 
@@ -159,15 +158,15 @@ class User(db.Model, BaseModel):
         return '<User %r:%r:%r:%r>' % (self.id, self.username, self.email, self.is_admin)
 
     @property
-    def password(self):
+    def psw(self):
         raise AttributeError('`password` is not a readable attribute')
 
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
+    @psw.setter
+    def psw(self, password):
+        self.password = generate_password_hash(password)
 
     def verify_password(self, password) -> bool:
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
 
 
 class Character(db.Model, BaseModel):
