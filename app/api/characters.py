@@ -3,11 +3,9 @@ from app.tables import Character
 
 getParser: reqparse.RequestParser = reqparse.RequestParser()
 
-postParser.add_argument('from', type=int)
-postParser.add_argument('to', type=int)
-postParser.add_argument('one', type=int)
-
-
+getParser.add_argument('from', type=int)
+getParser.add_argument('to', type=int)
+getParser.add_argument('one', type=int)
 
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -52,6 +50,8 @@ class Characters(Resource):
 
     @staticmethod
     def get() -> (dict, int):
+        
+        args: dict = getParser.parse_args()
 
         if args['one'] is not None:
             character = Character.query.filter(Character.id == args['one'])
