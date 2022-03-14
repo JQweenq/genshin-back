@@ -21,7 +21,7 @@ postParser.add_argument('sex', type=str)
 postParser.add_argument('birthday', type=int)
 postParser.add_argument('region', type=str)
 postParser.add_argument('affiliation', type=str)
-postParser.add_argument('portrait', type=bytes)
+postParser.add_argument('portrait', type=str)
 postParser.add_argument('description', type=str)
 
 deleteParser: reqparse.RequestParser = reqparse.RequestParser()
@@ -54,24 +54,27 @@ class Characters(Resource):
 
         characters = Character.filter_table(Character, args)
         try:
-          if len(characters) != 0:
-            return [item.as_dict() for item in characters], 200
-          return {
-            'message': 'Не найдено ни одного персонажа.'
-          }, 404
+            if len(characters) != 0:
+                return [item.as_dict() for item in characters], 200
+            return {
+                'message': 'Не найдено ни одного персонажа.'
+            }, 404
         except TypeError:
-          return characters.as_dict(), 200
+            if characters is not None:
+                return characters.as_dict(), 200
+            return {
+                'message': 'Не найдено ни одного персонажа.'
+            }, 404
         
 
     @staticmethod
     def post() -> (dict, int):
         args: dict = postParser.parse_args()
-        character = Character(_dict=args)
         try:
-            Character.update(character)
+            Character.update(Character(args))
         except:
             return {
-              'message': 'do not updated'
+              'message': 'do not created'
             }, 400
         return {
           'message': 'Success'
@@ -82,7 +85,6 @@ class Characters(Resource):
         args: dict = deleteParser.parse_args()
 
         character = Character.query.filter(Character.id == args['id']).first()
-        print(character)
 
         try:
             Character.delete(character)
@@ -96,13 +98,15 @@ class Characters(Resource):
 
     @staticmethod
     def patch():
-        '''not work yet'''
         args: dict = patchParser.parse_args()
-
-        character = Character.query.filter(Character.id == args['id']).first()
-        character.setValues(args)
-        character.update(character)
-
-        return {
-          'message': 'success'
-        }, 200
+        try:
+            character = Character.query.filter(Character.id == args['id']).first()
+            character.update_values(args)
+            character.update(character)
+            return {
+                'message': 'success'
+            }, 200
+        except AttributeError:
+            return {
+                'message': 'do not found id'
+            }, 200

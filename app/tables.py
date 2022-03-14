@@ -10,9 +10,8 @@ class BaseModel:
     __tablename__: str
 
     id: db.Column = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    modified_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), nullable=False)
-    created_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-
+    modified_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    created_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), nullable=False)
 
     _default_fields = [
         'id',
@@ -22,6 +21,14 @@ class BaseModel:
     _hidden_fields = [
         'created_at'
     ]
+
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)
+
+    def update_values(self, args: dict):
+        for key in args.keys():
+            if args[key] is not None:
+                self.__setattr__(key, args[key])
 
     def to_dict(self, show=[], _hide=[], _path=[]):
         # hidden columns
@@ -125,23 +132,22 @@ class BaseModel:
             getattr(self, c.name)) == int else None if getattr(self, c.name) is None else int(
             getattr(self, c.name).timestamp())) for c in self.__table__.columns}
 
-    def filter_table(table, args = None, **kwargs,) -> list:
+    def filter_table(table, args=None, **kwargs, ) -> list:
         if args is not None:
-          kwargs = args
+            kwargs = args
 
         if kwargs['id'] is not None:
-          return table.query.filter(table.id == kwargs['id']).first()
+            return table.query.filter(table.id == kwargs['id']).first()
         else:
-          if kwargs['from'] is not None and kwargs['to'] is not None:
-            return table.query.filter(table.id > kwargs['from']).filter(table.id < kwargs['to']).all()
-          else:
-            if kwargs['from'] is not None:
-              return table.query.filter(table.id > kwargs['from']).all()
-            elif kwargs['to'] is not None:
-              return table.query.filter(table.id < kwargs['to']).all()
+            if kwargs['from'] is not None and kwargs['to'] is not None:
+                return table.query.filter(table.id > kwargs['from']).filter(table.id < kwargs['to']).all()
             else:
-              return table.query.filter().all()
-            
+                if kwargs['from'] is not None:
+                    return table.query.filter(table.id > kwargs['from']).all()
+                elif kwargs['to'] is not None:
+                    return table.query.filter(table.id < kwargs['to']).all()
+                else:
+                    return table.query.filter().all()
 
     @staticmethod
     def add(resource):
@@ -190,10 +196,10 @@ class User(db.Model, BaseModel):
 class Character(db.Model, BaseModel):
     __tablename__ = 'CHARACTERS'
 
-    name: str = db.Column(db.String) # , unique=True
+    name: str = db.Column(db.String, unique=True)
     rarity: int = db.Column(db.Integer)
-    name_en: str = db.Column(db.String) # , unique=True
-    full_name: str = db.Column(db.String) # , unique=True
+    name_en: str = db.Column(db.String, unique=True)
+    full_name: str = db.Column(db.String, unique=True)
     card: str = db.Column(db.String)
     weapon: str = db.Column(db.String)
     eye: str = db.Column(db.String(8))
@@ -204,39 +210,10 @@ class Character(db.Model, BaseModel):
     protrait: str = db.Column(db.String)
     description: str = db.Column(db.String)
 
-    def __init__(self, name: str = None, rarity: int = None, name_en: str = None, full_name: str = None, card: str = None, weapon: str = None, eye: str = None, sex: str = None, birthday: str = None, region: str = None, affiliation: str = None, protrait: str = None, description: str = None):
-
-      self.name = name
-      self.rarity = rarity
-      self.name_en = name_en
-      self.full_name = full_name
-      self.card = card
-      self.weapon = weapon
-      self.eye = eye
-      self.sex = sex
-      self.birthday = birthday
-      self.region = region
-      self.affiliation = affiliation
-      self.protrait = protrait
-      self.description = description
-    
-    def set_attrs(self, args) -> None:
-      for key in args.keys():
-        if args[key] is not None:
-          print(f'{key}:{args[key]}')
-          self.__setattr__(key, args[key])
-
-    
-    def setValues(table, args: dict) -> None:
-      for key in args.keys():
-        print(f'{key}:{args[key]}')
-        self.__setattr__(key, args[key]) if args[key] is not None else None
-
-
 class Word(db.Model, BaseModel):
     __tablename__ = 'DICTIONARY'
 
-    word: str = db.Column(db.String) # , unique=True
+    word: str = db.Column(db.String, unique=True)
     translate: str = db.Column(db.String)
     subinf: str = db.Column(db.String)
     original: str = db.Column(db.String)
@@ -251,13 +228,14 @@ class Word(db.Model, BaseModel):
 class Wishe(db.Model, BaseModel):
     __tablename__ = 'WISHES'
 
-    name: str = db.Column(db.String) # , unique=True
+    name: str = db.Column(db.String, unique=True)
     version: str = db.Column(db.String(8))
     poster: str = db.Column(db.String)
     rate_5 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
     rate_4 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
 
-    def __init__(self, name: str = None, version: str = None, poster: str = None, rate_5: int = None, rate_4: int = None):
+    def __init__(self, name: str = None, version: str = None, poster: str = None, rate_5: int = None,
+                 rate_4: int = None):
         self.name = name
         self.version = version
         self.poster = poster
@@ -268,7 +246,7 @@ class Wishe(db.Model, BaseModel):
 class Weapon(db.Model, BaseModel):
     __tablename__ = 'WEAPONS'
 
-    name: str = db.Column(db.String)
+    name: str = db.Column(db.String, unique=True)
     icon: str = db.Column(db.String)
     rarity: int = db.Column(db.Integer)
     damage: int = db.Column(db.Integer)

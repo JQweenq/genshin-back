@@ -37,7 +37,7 @@ class Config:
 
 
 class Dev(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @classmethod
@@ -53,7 +53,7 @@ class Test(Config):
 
 class Prod(Config):
     '''UNIX OS'''
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     @classmethod
     def init_app(cls, app):
