@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!--    <link rel="stylesheet" href="static/style.css">-->
+    <link rel="stylesheet" href="static/index.css">
 </head>
 <body>
 <div class="wrapper">
@@ -12,28 +12,29 @@
         <nav>
             <a href="login">Sign In</a>
             <a href="register">Sigh Up</a>
-            <a href="#characters">Characters</a>
-            <a href="#dictionary">Dictionary</a>
-            <a href="#wishes">Wishes</a>
+            <a href="#Characters">Characters</a>
+            <a href="#Dictionary">Dictionary</a>
+            <a href="#Wishes">Wishes</a>
             <a href="#register">Register</a>
             <a href="#login">Login</a>
         </nav>
     </header>
     <main>
+        <h1>https://api-genshin.herokuapp.com</h1>
         {% for item in items %}
             <h2 id="{{ item.title }}">{{ item.title }}</h2>
             <h3>{{ item.url }}</h3>
-            <h4>GET</h4>
-            <p>{{ item.get_description }}</p>
+            <i><b>GET</b></i>
+            <span>{{ item.get_description }}</span>
             <pre>{{ item.get_attrs }}</pre>
-            <h4>POST</h4>
-            <p>{{ item.post_description }}</p>
+            <i><b>POST</b></i>
+            <span>{{ item.post_description }}</span>
             <pre>{{ item.post_attrs }}</pre>
-            <h4>DELETE</h4>
-            <p>{{ item.delete_description }}</p>
+            <i><b>DELETE</b></i>
+            <span>{{ item.delete_description }}</span>
             <pre>{{ item.delete_attrs }}</pre>
-            <h4>PATCH</h4>
-            <p>{{ item.patch_description }}</p>
+            <i><b>PATCH</b></i>
+            <span>{{ item.patch_description }}</span>
             <pre>{{ item.patch_attrs }}</pre>
         {% endfor %}
     </main>
