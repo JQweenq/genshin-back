@@ -10,4 +10,4 @@ except e:
     print("[Error] db", e)
 
 if __name__ == "__main__":
-    app.run(host='192.168.43.231')
+    app.run()
