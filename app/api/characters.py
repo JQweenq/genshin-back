@@ -5,7 +5,7 @@ getParser: reqparse.RequestParser = reqparse.RequestParser()
 
 getParser.add_argument('from', type=int)
 getParser.add_argument('to', type=int)
-getParser.add_argument('one', type=int)
+getParser.add_argument('id', type=int)
 
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -50,21 +50,18 @@ class Characters(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        
         args: dict = getParser.parse_args()
 
-        if args['one'] is not None:
-            character = Character.query.filter(Character.id == args['one'])
-
-            return character.as_dict(), 200
-        else:
-
-            characters: list = Character.query.filter(Character.id > args['to']).filter(Character.id < args['from'])
-            if characters is not None:
-                return [item.as_dict() for item in characters], 200
-            return {
-                       'message': 'Не найдено ни одного персонажа.'
-                   }, 404
+        characters = Character.filter_table(Character, args)
+        try:
+          if len(characters) != 0:
+            return [item.as_dict() for item in characters], 200
+          return {
+            'message': 'Не найдено ни одного персонажа.'
+          }, 404
+        except TypeError:
+          return characters.as_dict(), 200
+        
 
     @staticmethod
     def post() -> (dict, int):
@@ -74,17 +71,18 @@ class Characters(Resource):
             Character.update(character)
         except:
             return {
-                       'message': 'я хз че'
-                   }, 400
+              'message': 'do not updated'
+            }, 400
         return {
-                   'message': 'Success'
-               }, 200
+          'message': 'Success'
+        }, 200
 
     @staticmethod
     def delete():
         args: dict = deleteParser.parse_args()
 
         character = Character.query.filter(Character.id == args['id']).first()
+        print(character)
 
         try:
             Character.delete(character)
@@ -102,9 +100,9 @@ class Characters(Resource):
         args: dict = patchParser.parse_args()
 
         character = Character.query.filter(Character.id == args['id']).first()
-        newCharacter = Character(_dict=args)
-        character.update(newCharacter)
+        character.setValues(args)
+        character.update(character)
 
         return {
-                   'message': 'success'
-               }, 200
+          'message': 'success'
+        }, 200

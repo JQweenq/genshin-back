@@ -125,6 +125,24 @@ class BaseModel:
             getattr(self, c.name)) == int else None if getattr(self, c.name) is None else int(
             getattr(self, c.name).timestamp())) for c in self.__table__.columns}
 
+    def filter_table(table, args = None, **kwargs,) -> list:
+        if args is not None:
+          kwargs = args
+
+        if kwargs['id'] is not None:
+          return table.query.filter(table.id == kwargs['id']).first()
+        else:
+          if kwargs['from'] is not None and kwargs['to'] is not None:
+            return table.query.filter(table.id > kwargs['from']).filter(table.id < kwargs['to']).all()
+          else:
+            if kwargs['from'] is not None:
+              return table.query.filter(table.id > kwargs['from']).all()
+            elif kwargs['to'] is not None:
+              return table.query.filter(table.id < kwargs['to']).all()
+            else:
+              return table.query.filter().all()
+            
+
     @staticmethod
     def add(resource):
         db.session.add(resource)
@@ -186,33 +204,33 @@ class Character(db.Model, BaseModel):
     protrait: str = db.Column(db.String)
     description: str = db.Column(db.String)
 
-    def __init__(self, name: str = None, rarity: int = None, name_en: str = None, full_name: str = None, card: str = None, weapon: str = None, eye: str = None, sex: str = None, birthday: str = None, region: str = None, affiliation: str = None, protrait: str = None, description: str = None, _dict: dict = None) -> None:
+    def __init__(self, name: str = None, rarity: int = None, name_en: str = None, full_name: str = None, card: str = None, weapon: str = None, eye: str = None, sex: str = None, birthday: str = None, region: str = None, affiliation: str = None, protrait: str = None, description: str = None):
 
-        if _dict is not None:
-            for key in _dict.keys():
-                if _dict[key] is not None:
-                    self.__setattr__(key, _dict[key])
+      self.name = name
+      self.rarity = rarity
+      self.name_en = name_en
+      self.full_name = full_name
+      self.card = card
+      self.weapon = weapon
+      self.eye = eye
+      self.sex = sex
+      self.birthday = birthday
+      self.region = region
+      self.affiliation = affiliation
+      self.protrait = protrait
+      self.description = description
+    
+    def set_attrs(self, args) -> None:
+      for key in args.keys():
+        if args[key] is not None:
+          print(f'{key}:{args[key]}')
+          self.__setattr__(key, args[key])
 
-        else:
-
-            self.name = name
-            self.rarity = rarity
-            self.name_en = name_en
-            self.full_name = full_name
-            self.card = card
-            self.weapon = weapon
-            self.eye = eye
-            self.sex = sex
-            self.birthday = birthday
-            self.region = region
-            self.affiliation = affiliation
-            self.protrait = protrait
-            self.description = description
-
-
-    def setValues(self, args: dict) -> None:
-        for key in args.keys():
-            self.__setattr__(key, args[key]) if args[key] is not None else None
+    
+    def setValues(table, args: dict) -> None:
+      for key in args.keys():
+        print(f'{key}:{args[key]}')
+        self.__setattr__(key, args[key]) if args[key] is not None else None
 
 
 class Word(db.Model, BaseModel):
