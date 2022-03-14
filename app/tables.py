@@ -22,9 +22,6 @@ class BaseModel:
         'created_at'
     ]
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
-
     def update_values(self, args: dict):
         for key in args.keys():
             if args[key] is not None:
@@ -169,28 +166,26 @@ class User(db.Model, BaseModel):
     __tablename__: str = 'USERS'
 
     username: str = db.Column(db.String, nullable=False)
-    password: str = db.Column(db.String(128), nullable=False)
+    hash: str = db.Column(db.String(128), nullable=False)
     email: str = db.Column(db.String, nullable=False, unique=True)
     is_admin: bool = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, username: str, email: str, is_admin: bool = None) -> None:
-        self.username = username
-        self.email = email
-        self.is_admin = is_admin
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)
 
     def __repr__(self) -> str:
         return '<User %r:%r:%r:%r>' % (self.id, self.username, self.email, self.is_admin)
 
     @property
-    def psw(self):
+    def password(self):
         raise AttributeError('`password` is not a readable attribute')
 
-    @psw.setter
-    def psw(self, password):
-        self.password = generate_password_hash(password)
+    @password.setter
+    def password(self, password):
+        self.hash = generate_password_hash(password)
 
     def verify_password(self, password) -> bool:
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.hash, password)
 
 
 class Character(db.Model, BaseModel):
@@ -210,6 +205,9 @@ class Character(db.Model, BaseModel):
     protrait: str = db.Column(db.String)
     description: str = db.Column(db.String)
 
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)
+
 class Word(db.Model, BaseModel):
     __tablename__ = 'DICTIONARY'
 
@@ -218,11 +216,9 @@ class Word(db.Model, BaseModel):
     subinf: str = db.Column(db.String)
     original: str = db.Column(db.String)
 
-    def __init__(self, word: str = None, translate: str = None, subinf: str = None, original: str = None) -> None:
-        self.word = word
-        self.translate = translate
-        self.subinf = subinf
-        self.original = original
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)
+
 
 
 class Wishe(db.Model, BaseModel):
@@ -234,13 +230,8 @@ class Wishe(db.Model, BaseModel):
     rate_5 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
     rate_4 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
 
-    def __init__(self, name: str = None, version: str = None, poster: str = None, rate_5: int = None,
-                 rate_4: int = None):
-        self.name = name
-        self.version = version
-        self.poster = poster
-        self.rate_5 = rate_5
-        self.rate_4 = rate_4
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)
 
 
 class Weapon(db.Model, BaseModel):
@@ -252,9 +243,5 @@ class Weapon(db.Model, BaseModel):
     damage: int = db.Column(db.Integer)
     dest: str = db.Column(db.String)
 
-    def __init__(self, name: str = None, icon: str = None, rarity: int = None, damage: int = None, dest: str = None):
-        self.name = name
-        self.icon = icon
-        self.rarity = rarity
-        self.damage = damage
-        self.dest = dest
+    def __init__(self, args: dict) -> None:
+        self.update_values(args)

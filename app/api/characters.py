@@ -70,8 +70,9 @@ class Characters(Resource):
     @staticmethod
     def post() -> (dict, int):
         args: dict = postParser.parse_args()
+        character = Character(args)
         try:
-            Character.update(Character(args))
+            Character.update(character)
         except:
             return {
               'message': 'do not created'

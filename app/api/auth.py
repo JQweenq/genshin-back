@@ -24,8 +24,8 @@ class Registration(Resource):
         args: dict = regParser.parse_args()
 
         try:
-            user = User(args['username'], args['email'])
-            user.psw = args['password']
+            user = User(args)
+            user.password = args['password']
             user.add(user)
             return {
                        'message': 'Аккаунт создан'
@@ -41,7 +41,7 @@ class Login(Resource):
     def post() -> (dict, int):
         args = logParser.parse_args()
 
-        user = User.query.filter_by(email=args['email']).first()
+        user = User.query.filter(User.email == args['email']).first()
 
         if user is not None and \
                 user.verify_password(args['password']):
