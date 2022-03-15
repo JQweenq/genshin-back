@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request
+from flask import render_template, Blueprint, request, redirect, url_for
 
 main: Blueprint = Blueprint('main', __name__)
 
@@ -72,3 +72,7 @@ def register():
     return render_template('signup.html')
 
 
+# redirects
+@main.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename='favicon.ico'), code=302)
