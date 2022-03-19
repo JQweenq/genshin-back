@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sigh Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+
+<body>
+<div class="wrapper">
+    <form action="./api/register" method="post">
+        <h1>Sigh Up</h1>
+        <input tabindex="1" placeholder="Username" type="text" name="username" required/>
+        <input tabindex="2" placeholder="E-mail" type="text" name="email" required/>
+        <input tabindex="3" placeholder="Password" type="password" name="password" required/>
+        <button tabindex="4" type="submit">Sigh Up</button>
+    </form>
+</div>
+</body>
+
+</html>
