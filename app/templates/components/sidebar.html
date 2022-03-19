@@ -1,0 +1,11 @@
+{%- include 'components/header.html' -%}
+<nav>
+    {%- for key, route in routes.items() -%}
+        <a>{{ route.title }}</a>
+        <div class="burger">
+            {%- for method in route.methods -%}
+                <a href="{{ route.href + '#' + method.method }}">{{ method.method }}</a>
+            {%- endfor -%}
+        </div>
+    {%- endfor -%}
+</nav>

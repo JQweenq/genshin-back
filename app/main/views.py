@@ -1,74 +1,149 @@
-from flask import render_template, Blueprint, request
+from flask import render_template, Blueprint, request, redirect
 
-main: Blueprint = Blueprint('main', __name__)
+main: Blueprint = Blueprint('/', __name__)
 
-class Item:
+class Route:
     title: str
-    url: str
-    get_description: str
-    get_attrs: str
-    post_description: str
-    post_attrs: str
-    delete_description: str
-    delete_attrs: str
-    patch_description: str
-    patch_attrs: str
+    href: str
+    methods: list
 
     def __init__(self, **kwargs):
         for key in kwargs:
             self.__setattr__(key, kwargs[key])
 
+class Method:
+    route: str
+    methods: list
+    description: str
+    params: str
+    results: str
+
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            self.__setattr__(key, kwargs[key])
+
+
+
+
+
+
+
+
+routes = {
+    'characters':
+        Route(
+            title = 'Characters',
+            href = 'characters',
+            methods = [
+                Method(
+                    route = 'api/characters',
+                    method = 'GET',
+                    description = 'Получить список персонажей',
+                    params = '{\nid?: int\nfrom?: int\nto?: int\n}',
+                ),
+                Method(
+                    route = 'api/characters',
+                    method = 'POST',
+                    description = 'Создать персонажа',
+                    params='{\nid?: int,\nname?: str,\nrarity?: int,\nname_en?: str,\nfull_name?: str,\ncard?: str,\nweapon?: str,\neye?: str,\nsex?: str\nbirthday?: int\nregion?: str\naffiliation?: str\nportrait?: str\ndescription?: str\n}',
+                ),
+                Method(
+                    route = 'api/characters',
+                    method = 'DELETE',
+                    description = 'Удалить персонажа',
+                    params='{\nid: int\n}',
+                ),
+                Method(
+                    route = 'api/characters',
+                    method = 'PATCH',
+                    description = 'Изменить персонажа',
+                    params='{\nid: int\nname?: str\nrarity?: int\nname_en?: str\nfull_name?: str\ncard?: str\nweapon?: str\neye?: str\nsex?: str\nbirthday?: int\nregion?: str\naffiliation?: str\nportrait?: str\ndescription?: str\n}'
+                )
+            ],
+        ),
+    'dictionary':
+        Route(
+            title='Dictionary',
+            href = 'dictionary',
+            methods=[
+                Method(
+                    route='api/dictionary',
+                    method='GET',
+                    description = 'Получить список слов',
+                    params='{\nid?: int\nfrom?: int\nto?: int\n}',
+                ),
+                Method(
+                    route='api/dictionary',
+                    method='POST',
+                    description = 'Создать слово',
+                    params='{\nid: int\nword?: str\ntranslate?: str\nsubinf?: str\noriginal? str\n}',
+                ),
+                Method(
+                    route='api/dictionary',
+                    method='DELETE',
+                    description = 'Удалить слово',
+                    params='{\nid: int\n}',
+                ),
+                Method(
+                    route='api/dictionary',
+                    method='PATCH',
+                    description = 'Изменить слово',
+                    params='{\nid: int\nword?: str\ntranslate?: str\nsubinf?: str\noriginal? str\n}',
+                )
+            ],
+        ),
+    'wishes':
+        Route(
+            title = 'Wishes',
+            href = 'wishes',
+            methods = [
+                Method(
+                    route = 'api/wishes',
+                    method = 'GET',
+                    description = 'Получить список молитв',
+                    params='{\nid?: int\nfrom?: int\nto?: int\n}',
+                ),
+                Method(
+                    route = 'api/wishes',
+                    method = 'POST',
+                    description = 'Создать молитву',
+                    params='{\nid?: int\nname?: str\nversion?: str\nposter?: str\nrate_5?: int\nrate_4?: int\n}',
+                ),
+                Method(
+                    route = 'api/wishes',
+                    method = 'DELETE',
+                    description = 'Удалить молитву',
+                    params='{\nid: int\n}',
+                ),
+                Method(
+                    route = 'api/wishes',
+                    method = 'PATCH',
+                    description = 'Изменить молитву',
+                    params='{\nid: int\nname?: str\nversion?: str\nposter?: str\nrate_5?: int\nrate_4?: int\n}'
+                )
+            ],
+        )
+}
+
 @main.route('/')
 @main.route('/index')
-def index():
-    return render_template('index.html', items=[
-        Item(
-            title='Characters',
-            url='./api/characters',
-            get_description='Получить список персонажей',
-            get_attrs='{\nid?: int\nfrom?: int\nto?: int\n}',
-            post_description='Создать персонажа',
-            post_attrs='{\nid?: int,\nname?: str,\nrarity?: int,\nname_en?: str,\nfull_name?: str,\ncard?: str,\nweapon?: str,\neye?: str,\nsex?: str\nbirthday?: int\nregion?: str\naffiliation?: str\nportrait?: str\ndescription?: str\n}',
-            delete_description='Удалить персонажа',
-            delete_attrs='{\nid: int\n}',
-            patch_description='Изменить данные персонажа',
-            patch_attrs='{\nid: int\nname?: str\nrarity?: int\nname_en?: str\nfull_name?: str\ncard?: str\nweapon?: str\neye?: str\nsex?: str\nbirthday?: int\nregion?: str\naffiliation?: str\nportrait?: str\ndescription?: str\n}'
-        ),
-        Item(
-            title='Dictionary',
-            url='./api/dictionary',
-            get_description='Получить список слов',
-            get_attrs='{\nid?: int\nfrom?: int\nto?: int\n}',
-            post_description='Создать слово',
-            post_attrs='{\nid: int\nword?: str\ntranslate?: str\nsubinf?: str\noriginal? str\n}',
-            delete_description='Удалить слово',
-            delete_attrs='{\nid: int\n}',
-            patch_description='Изменить данные слова',
-            patch_attrs='{\nid: int\nword?: str\ntranslate?: str\nsubinf?: str\noriginal? str\n}',
-        ),
-        Item(
-            title='Wishes',
-            url='./api/wishes',
-            get_description='Получить список персонажей',
-            get_attrs='{\nid?: int\nfrom?: int\nto?: int\n}',
-            post_description='Создать персонажа',
-            post_attrs='{\nid?: int\nname?: str\nversion?: str\nposter?: str\nrate_5?: int\nrate_4?: int\n}',
-            delete_description='Удалить персонажа',
-            delete_attrs='{\nid: int\n}',
-            patch_description='Изменить данные персонажа',
-            patch_attrs='{\nid: int\nname?: str\nversion?: str\nposter?: str\nrate_5?: int\nrate_4?: int\n}'
-        )
-    ])
+@main.route('/<route>')
+@main.route('/index/<route>')
+def index(route=None):
+    if route is not None:
+        methods = routes[route]
+    else:
+        methods = None
+    print(route)
+    return render_template('index.html', routes=routes, methods=methods)
+
 
 @main.route('/login')
 def login():
-    return render_template('signin.html')
+    return render_template('auth.html', is_login=True)
 
 @main.route('/register')
 def register():
-    print(request.method)
-    if request.method == 'POST':
-        pass
-    return render_template('signup.html')
+    return render_template('auth.html', is_login=False)
 
 

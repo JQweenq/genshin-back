@@ -4,47 +4,17 @@
     <meta charset="UTF-8">
     <title>Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
 <div class="wrapper">
-    <header>
-        <nav>
-            <a href="login">Sign In</a>
-            <a href="register">Sigh Up</a>
-            <a href="#Characters">Characters</a>
-            <a href="#Dictionary">Dictionary</a>
-            <a href="#Wishes">Wishes</a>
-            <a href="#register">Register</a>
-            <a href="#login">Login</a>
-        </nav>
-    </header>
+    <section class="sidebar" tabindex="-1">
+        {%- include 'components/sidebar.html' -%}
+    </section>
     <main>
-        <h1>https://api-genshin.herokuapp.com</h1>
-        {% for item in items %}
-            <h2 id="{{ item.title }}">{{ item.title }}</h2>
-            <h3>{{ item.url }}</h3>
-            <i><b>GET</b></i>
-            <span>{{ item.get_description }}</span>
-            <pre>{{ item.get_attrs }}</pre>
-            <i><b>POST</b></i>
-            <span>{{ item.post_description }}</span>
-            <pre>{{ item.post_attrs }}</pre>
-            <i><b>DELETE</b></i>
-            <span>{{ item.delete_description }}</span>
-            <pre>{{ item.delete_attrs }}</pre>
-            <i><b>PATCH</b></i>
-            <span>{{ item.patch_description }}</span>
-            <pre>{{ item.patch_attrs }}</pre>
-        {% endfor %}
+        {%- include 'components/main.html' -%}
     </main>
-    <footer>
-        <address>
-            Contact:<br>
-            Github: <a href="https://github.com/JQweenq">JQweenq</a><br>
-            Discord: Josty#0626
-        </address>
-    </footer>
 </div>
+<script src="{{ url_for('static', filename='index.js') }}" />
 </body>
 </html>

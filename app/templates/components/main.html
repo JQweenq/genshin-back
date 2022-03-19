@@ -1,0 +1,10 @@
+{%- if methods is none -%}
+    <h1 align="center">Docs for genshin-journey.ml</h1>
+{%- else -%}
+    {%- for method in methods.methods  -%}
+        <h2 id="{{ method.method.upper() }}">{{ method.method.upper() }}</h2>
+        <h3>{{ method.route }}</h3>
+        <h4>{{ method.description }}</h4>
+        <pre>{{ method.params }}</pre>
+    {%- endfor -%}
+{%- endif -%}

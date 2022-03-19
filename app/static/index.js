@@ -1,0 +1,2 @@
+const bodyXhr = new XMLHttpRequest()
+
