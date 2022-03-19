@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from flask import render_template, Blueprint, request, redirect
-=======
 from flask import render_template, Blueprint, request, redirect, url_for
->>>>>>> f63d0e31679f4c610799eb9c87a883a090d4b2bd
 
 main: Blueprint = Blueprint('/', __name__)
 
