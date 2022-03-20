@@ -1,4 +1,5 @@
 from flask import render_template, Blueprint, request, redirect, url_for
+from flask_login import login_required
 
 main: Blueprint = Blueprint('/', __name__)
 
@@ -21,13 +22,6 @@ class Method:
     def __init__(self, **kwargs):
         for key in kwargs:
             self.__setattr__(key, kwargs[key])
-
-
-
-
-
-
-
 
 routes = {
     'characters':
@@ -146,6 +140,10 @@ def login():
 def register():
     return render_template('auth.html', is_login=False)
 
+@main.route('/admin')
+@login_required
+def admin():
+    return render_template('admin.html')
 
 # redirects
 @main.route('/favicon.ico')

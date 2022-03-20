@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from flask_login import login_user, logout_user
 from sqlalchemy.exc import IntegrityError
 
 from app.tables import User
@@ -45,6 +46,7 @@ class Login(Resource):
 
         if user is not None and \
                 user.verify_password(args['password']):
+            login_user(user)
             return {
                        'message': 'Успешно авторизирован',
                        'id': user.id,
@@ -52,5 +54,13 @@ class Login(Resource):
                        'username': user.username
                    }, 200
         return {
-                   'message': 'Введен не правильный логин или пароль'
+                   'message': 'Выйди и зайди нормально'
                }, 401
+
+class Logout(Resource):
+    @staticmethod
+    def post() -> (dict, int):
+        logout_user()
+        return {
+            'message': 'success'
+        }, 200

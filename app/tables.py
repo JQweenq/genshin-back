@@ -2,8 +2,8 @@ import json
 
 from sqlalchemy.orm import QueryableAttribute
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.extensions import db
-
+from app.extensions import db, login
+from flask_login import UserMixin
 
 class BaseModel:
     __abstract__ = True
@@ -162,7 +162,11 @@ class BaseModel:
         return db.session.commit()
 
 
-class User(db.Model, BaseModel):
+@login.user_loader
+def load_user(id):
+    return db.session.query(User).get(id)
+
+class User(db.Model, BaseModel, UserMixin):
     __tablename__: str = 'USERS'
 
     username: str = db.Column(db.String, nullable=False)
