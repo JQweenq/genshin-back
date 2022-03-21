@@ -10,7 +10,7 @@ getParser.add_argument('id', type=int)
 
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
-postParser.add_argument('id', type=int, required=True)
+postParser.add_argument('id', type=int)
 postParser.add_argument('name', type=str)
 postParser.add_argument('version', type=str)
 postParser.add_argument('poster', type=str)
