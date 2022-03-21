@@ -9,10 +9,10 @@
 <body>
 <div class="wrapper">
     <section class="sidebar" tabindex="-1">
-        {%- include 'components/sidebar.html' -%}
+        {{ sidebar | safe }}
     </section>
     <main>
-        {%- include 'components/main.html' -%}
+        {{ main | safe }}
     </main>
 </div>
 <script src="{{ url_for('static', filename='index.js') }}" />

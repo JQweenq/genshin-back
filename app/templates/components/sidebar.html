@@ -1,11 +1,49 @@
-{%- include 'components/header.html' -%}
+<header>
+    {%- if is_authenticated -%}
+        <a class="btn btn-neutral" onclick="logout()">Logout</a>
+        <a class="btn btn-neutral" href="user/{{ current_user_name }}">Profile</a>
+        <script>
+            function logout() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    location.href = location.href;
+                }
+                xhr.open('POST', '/api/logout');
+                xhr.send();
+            }
+        </script>
+    {%- elif is_profile -%}
+        <a class="btn btn-neutral" onclick="logout()">Logout</a>
+        <a class="btn btn-neutral" href="/">Docs</a>
+        <script>
+            function logout() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    location.href = "/";
+                }
+                xhr.open('POST', '/api/logout');
+                xhr.send();
+            }
+        </script>
+    {%- else -%}
+        <a class="btn btn-neutral" href="login">Sign In</a>
+        <a class="btn btn-neutral" href="register">Sign Up</a>
+    {%- endif -%}
+</header>
 <nav>
-    {%- for key, route in routes.items() -%}
-        <a>{{ route.title }}</a>
-        <div class="burger">
-            {%- for method in route.methods -%}
-                <a href="{{ route.href + '#' + method.method }}">{{ method.method }}</a>
-            {%- endfor -%}
-        </div>
-    {%- endfor -%}
+    {%- if routes -%}
+
+        {%- for key, route in routes.items() -%}
+            <a>{{ route.title }}</a>
+            <div class="burger">
+                {%- for method in route.methods -%}
+                    <a href="{{ route.href + '#' + method.method }}">{{ method.method }}</a>
+                {%- endfor -%}
+            </div>
+        {%- endfor -%}
+
+    {%- endif -%}
+
+
+
 </nav>

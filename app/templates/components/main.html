@@ -1,4 +1,6 @@
-{%- if methods is none -%}
+{%- if is_profile -%}
+    <h1 align="center">Ваш профиль</h1>
+{%- elif methods is none -%}
     <h1 align="center">Docs for genshin-journey.ml</h1>
 {%- else -%}
     {%- for method in methods.methods  -%}

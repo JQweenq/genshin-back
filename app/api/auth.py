@@ -4,8 +4,6 @@ from sqlalchemy.exc import IntegrityError
 
 from app.tables import User
 
-
-
 regParser: reqparse.RequestParser = reqparse.RequestParser()
 
 regParser.add_argument('username', type=str, required=True, help='Username field cannot be blank.')
@@ -36,6 +34,7 @@ class Registration(Resource):
                        'message': 'Такой пользователь уже существует'
                    }, 401
 
+
 class Login(Resource):
 
     @staticmethod
@@ -57,10 +56,12 @@ class Login(Resource):
                    'message': 'Выйди и зайди нормально'
                }, 401
 
+
 class Logout(Resource):
+
     @staticmethod
     def post() -> (dict, int):
         logout_user()
         return {
-            'message': 'success'
-        }, 200
+                   'message': 'success'
+               }, 200

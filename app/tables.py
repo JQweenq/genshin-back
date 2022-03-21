@@ -161,6 +161,11 @@ class BaseModel:
         db.session.add(resource)
         return db.session.commit()
 
+    @staticmethod
+    def find(base, id: str):
+        return db.session.query(base).get(id)
+
+
 
 @login.user_loader
 def load_user(id):
@@ -169,7 +174,7 @@ def load_user(id):
 class User(db.Model, BaseModel, UserMixin):
     __tablename__: str = 'USERS'
 
-    username: str = db.Column(db.String, nullable=False)
+    username: str = db.Column(db.String, nullable=False, unique=True)
     hash: str = db.Column(db.String(128), nullable=False)
     email: str = db.Column(db.String, nullable=False, unique=True)
     is_admin: bool = db.Column(db.Boolean, nullable=False, default=False)

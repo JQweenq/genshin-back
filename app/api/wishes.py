@@ -1,7 +1,6 @@
 from flask_restful import Resource, reqparse
 from app.tables import Wishe
 
-
 getParser: reqparse.RequestParser = reqparse.RequestParser()
 
 getParser.add_argument('from', type=int)
