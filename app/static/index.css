@@ -1,6 +1,7 @@
 *{
     padding: 0;
     margin: 0;
+    color-scheme: dark;
 }
 
 html, body{
@@ -61,7 +62,6 @@ header{
 }
 
 .sidebar nav{
-    -webkit-flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
@@ -78,6 +78,9 @@ header{
     color: #aaa;
     margin-left: 10px;
     -webkit-user-drag: none;
+}
+.sidebar nav a:hover {
+    color: gainsboro;
 }
 pre{
     background: #282828;
@@ -104,7 +107,6 @@ pre{
     font-weight: 400;
     font-family: Lato,proxima-nova,Helvetica Neue,Arial,sans-serif;
     box-shadow: inset 0 1px 2px -1px hsl(0deg 0% 100% / 50%), inset 0 -2px 0 0 rgb(0 0 0 / 20%);
-    outline-none: false;
     vertical-align: middle;
     -webkit-user-drag: none;
     -webkit-user-select: none;
