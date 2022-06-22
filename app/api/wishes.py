@@ -1,5 +1,7 @@
 from flask_restful import Resource, reqparse
 from app.tables import Wish
+from app.data import WishData
+from app.api.base import BaseResource
 
 getParser: reqparse.RequestParser = reqparse.RequestParser()
 
@@ -22,68 +24,32 @@ deleteParser.add_argument('id', type=int, required=True)
 patchParser: reqparse.RequestParser = reqparse.RequestParser()
 
 patchParser.add_argument('id', type=int, required=True)
-patchParser.add_argument('name', type=str)
-patchParser.add_argument('version', type=str)
-patchParser.add_argument('poster', type=str)
-patchParser.add_argument('rate_5', type=int)
-patchParser.add_argument('rate_4', type=int)
+patchParser.add_argument('attr', type=str, required=True)
+patchParser.add_argument('value', type=str, required=True)
 
 
 class Wishes(Resource):
+
     @staticmethod
     def get() -> (dict, int):
         args: dict = getParser.parse_args()
 
-        dictionary = Wish.filter_table(Wish, args)
-        if len(dictionary) != 0:
-            return [item.as_dict() for item in dictionary], 200
-        elif len(dictionary) == 1:
-            return dictionary.as_dict(), 200
-        else:
-            return {
-                       'message': 'Wishes not found'
-                   }, 404
+        return BaseResource.get(Wish, args['id'], args['from'], args['to'])
 
     @staticmethod
     def post() -> (dict, int):
-        args: dict = postParser.parse_args()
-        try:
-            Wish.update(Wish(args))
-        except:
-            return {
-                       'message': 'Wish not created'
-                   }, 400
-        return {
-                   'message': 'Success'
-               }, 200
+        args = postParser.parse_args()
+
+        return BaseResource.post(Wish, WishData, args)
 
     @staticmethod
     def delete():
         args: dict = deleteParser.parse_args()
 
-        wish = Wish.query.filter(Wish.id == args['id']).first()
-
-        try:
-            Wish.delete(wish)
-        except:
-            return {
-                       'message': 'Id not found'
-                   }, 404
-        return {
-                   'message': 'Success'
-               }, 200
+        return BaseResource.delete(Wish, args['id'])
 
     @staticmethod
     def patch():
         args: dict = patchParser.parse_args()
-        try:
-            wishe = Wish.query.filter(Wish.id == args['id']).first()
-            wishe.update_values(args)
-            wishe.update(wishe)
-            return {
-                       'message': 'Success'
-                   }, 200
-        except AttributeError:
-            return {
-                       'message': 'Id not found'
-                   }, 200
+
+        return BaseResource.patch(Wish, WishData, args['id'], args['attr'], args['value'])

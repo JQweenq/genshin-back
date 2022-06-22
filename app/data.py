@@ -11,19 +11,19 @@ class UserData:
 
 @dataclass()
 class CharacterData:
-    name: str
-    rarity: int
-    name_en: str
-    full_name: str
-    card: str
-    weapon: str
-    eye: str
-    sex: str
-    birthday: str
-    region: str
-    affiliation: str
-    portrait: str
-    description: str
+    name: str = None
+    rarity: int = None
+    name_en: str = None
+    full_name: str = None
+    card: str = None
+    weapon: str = None
+    eye: str = None
+    sex: str = None
+    birthday: str = None
+    region: str = None
+    affiliation: str = None
+    portrait: str = None
+    description: str = None
 
 
 @dataclass()

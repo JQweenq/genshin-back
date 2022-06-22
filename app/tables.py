@@ -23,7 +23,7 @@ class Base:
         'created_at'
     ]
 
-    def update_values(self, data: object):
+    def update_values(self, data):
         for key in data.__dict__.keys():
             self.__setattr__(key, getattr(data, key))
 
@@ -44,20 +44,17 @@ class Base:
 
         return data
 
-    def filter_table(table, args=None, **kwargs, ) -> list:
-        if args is not None:
-            kwargs = args
-
-        if kwargs['id'] is not None:
-            return table.query.filter(table.id == kwargs['id']).first()
+    def filter_table(table, id=None, _from=None, to=None) -> list:
+        if id is not None and id > 0:
+            return table.query.filter(table.id == id).first()
         else:
-            if kwargs['from'] is not None and kwargs['to'] is not None:
-                return table.query.filter(table.id > kwargs['from']).filter(table.id < kwargs['to']).all()
+            if _from is not None and to is not None:
+                return table.query.filter(table.id > _from).filter(table.id < to).all()
             else:
-                if kwargs['from'] is not None:
-                    return table.query.filter(table.id > kwargs['from']).all()
-                elif kwargs['to'] is not None:
-                    return table.query.filter(table.id < kwargs['to']).all()
+                if _from is not None:
+                    return table.query.filter(table.id > _from).all()
+                elif to is not None:
+                    return table.query.filter(table.id < to).all()
                 else:
                     return table.query.filter().all()
 
@@ -128,6 +125,9 @@ class Character(db.Model, Base):
 
     def __init__(self, data: CharacterData):
         self.update_values(data)
+
+    def __repr__(self) -> str:
+        return '<Character %r:%r:%r:%r>' % (self.id, self.name, self.rarity, self.sex)
 
 
 class Word(db.Model, Base):
