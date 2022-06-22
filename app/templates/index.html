@@ -5,16 +5,36 @@
     <title>Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 <div class="wrapper">
-    <section class="sidebar" tabindex="-1">
-        {{ sidebar | safe }}
-    </section>
+    <div class="sidebar" tabindex="-1">
+        <header>
+            {%- if is_authenticated -%}
+            <a class="btn btn-neutral" onclick="logout()">Logout</a>
+            {%- endif -%}
+            <a class="btn btn-neutral" href="login">Sign In</a>
+        </header>
+        <nav>
+            {%- for key, route in routes.items() -%}
+            <a href="{{ '/' + route.href }}">{{ route.title }}</a>
+            <div class="burger">
+                {%- for method in route.methods -%}
+                <a href="{{ '/' + route.href + '#' + method.method }}">{{ method.method }}</a>
+                {%- endfor -%}
+            </div>
+            {%- endfor -%}
+        </nav>
+    </div>
     <main>
-        {{ main | safe }}
+        {%- for method in methods.methods -%}
+        <h2 id="{{ method.method.upper() }}">{{ method.method.upper() }}</h2>
+        <h3>{{ method.route }}</h3>
+        <h4>{{ method.description }}</h4>
+        <pre>{{ method.params }}</pre>
+        {%- endfor -%}
     </main>
 </div>
-<script src="{{ url_for('static', filename='index.js') }}" />
 </body>
 </html>

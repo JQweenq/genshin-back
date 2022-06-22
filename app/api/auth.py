@@ -27,11 +27,11 @@ class Registration(Resource):
             user.password = args['password']
             user.add(user)
             return {
-                       'message': 'Аккаунт создан'
+                       'message': 'Account created'
                    }, 200
         except IntegrityError:
             return {
-                       'message': 'Такой пользователь уже существует'
+                       'message': 'Account already exists'
                    }, 401
 
 
@@ -46,22 +46,16 @@ class Login(Resource):
         if user is not None and \
                 user.verify_password(args['password']):
             login_user(user)
-            return {
-                       'message': 'Успешно авторизирован',
-                       'id': user.id,
-                       'created': user.created_at.strftime('%m/%d/%Y, %H:%M:%S'),
-                       'username': user.username
-                   }, 200
+            return user.as_dict(), 200
         return {
-                   'message': 'Выйди и зайди нормально'
+                   'message': 'Not authorized'
                }, 401
 
 
 class Logout(Resource):
-
     @staticmethod
     def post() -> (dict, int):
         logout_user()
         return {
-                   'message': 'success'
+                   'message': 'Success'
                }, 200

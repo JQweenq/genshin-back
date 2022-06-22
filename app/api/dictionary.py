@@ -9,7 +9,6 @@ getParser.add_argument('id', type=int)
 
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
-postParser.add_argument('id', type=int)
 postParser.add_argument('word', type=str)
 postParser.add_argument('translate', type=str)
 postParser.add_argument('subinf', type=str)
@@ -27,6 +26,7 @@ patchParser.add_argument('translate', type=str)
 patchParser.add_argument('subinf', type=str)
 patchParser.add_argument('original', type=str)
 
+
 class Dictionary(Resource):
 
     @staticmethod
@@ -34,17 +34,13 @@ class Dictionary(Resource):
         args: dict = getParser.parse_args()
 
         dictionary = Word.filter_table(Word, args)
-        try:
-            if len(dictionary) != 0:
-                return [item.as_dict() for item in dictionary], 200
+        if len(dictionary) != 0:
+            return [item.as_dict() for item in dictionary], 200
+        elif len(dictionary) == 1:
+            return dictionary.as_dict(), 200
+        else:
             return {
-                       'message': 'do not found words'
-                   }, 404
-        except TypeError:
-            if dictionary is not None:
-                return dictionary.as_dict(), 200
-            return {
-                       'message': 'do not found words'
+                       'message': 'Words not found'
                    }, 404
 
     @staticmethod
@@ -54,7 +50,7 @@ class Dictionary(Resource):
             Word.update(Word(args))
         except:
             return {
-                       'message': 'do not created'
+                       'message': 'Word not created'
                    }, 400
         return {
                    'message': 'Success'
@@ -70,7 +66,7 @@ class Dictionary(Resource):
             Word.delete(word)
         except:
             return {
-                       'message': 'id do not found'
+                       'message': 'Id not found'
                    }, 404
         return {
                    'message': 'Success'
@@ -84,9 +80,9 @@ class Dictionary(Resource):
             word.update_values(args)
             word.update(word)
             return {
-                       'message': 'success'
+                       'message': 'Success'
                    }, 200
         except AttributeError:
             return {
-                       'message': 'do not found id'
+                       'message': 'Id not found'
                    }, 200

@@ -8,32 +8,15 @@
 </head>
 <body>
     <div class="wrapper">
-
-        {%- if is_login -%}
-            <form class="sidebar" action="{{ url_for('api.login') }}" method="post">
-                <header>
-                    <p>Войти</p>
-                </header>
-                <div>
-                    <input tabindex="1" placeholder="E-mail" type="text" name="email" required>
-                    <input tabindex="2" placeholder="Password" type="password" name="password" required>
-                </div>
-                <button class="btn btn-positive" type="submit">Войти</button>
-            </form>
-        {%- else -%}
-            <form class="sidebar" action="{{ url_for('api.registration') }}" method="post">
-                <header>
-                    <p>Зарегистироваться</p>
-                </header>
-                <div>
-                    <input tabindex="1" placeholder="E-mail" type="text" name="email" required>
-                    <input tabindex="2" placeholder="Username" type="text" name="username" required>
-                    <input tabindex="2" placeholder="Password" type="password" name="password" required>
-                    <input tabindex="3" placeholder="Password" type="password" required>
-                </div>
-                <button class="btn btn-positive" type="submit">Зарегистироваться</button>
-            </form>
-        {%- endif -%}
+        <form class="sidebar" action="{{ url_for('api.login') }}" method="post">
+            <header>
+                <p>Войти</p>
+            </header>
+            <div>
+                <input tabindex="1" placeholder="E-mail" type="text" name="email" required>
+                <input tabindex="2" placeholder="Password" type="password" name="password" required>
+            </div>
+            <button class="btn btn-positive" type="submit">Войти</button>
         </form>
     </div>
 </body>

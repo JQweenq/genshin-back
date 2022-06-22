@@ -9,8 +9,7 @@ getParser.add_argument('id', type=int)
 
 postParser: reqparse.RequestParser = reqparse.RequestParser()
 
-postParser.add_argument('id', type=int)
-postParser.add_argument('name', type=str)
+postParser.add_argument('name', type=str, required=True)
 postParser.add_argument('rarity', type=int)
 postParser.add_argument('name_en', type=str)
 postParser.add_argument('full_name', type=str)
@@ -53,19 +52,15 @@ class Characters(Resource):
         args: dict = getParser.parse_args()
 
         characters = Character.filter_table(Character, args)
-        try:
-            if len(characters) != 0:
-                return [item.as_dict() for item in characters], 200
+
+        if len(characters) != 0:
+            return [item.as_dict() for item in characters], 200
+        elif len(characters) == 1:
+            return characters.as_dict(), 200
+        else:
             return {
-                'message': 'Не найдено ни одного персонажа.'
-            }, 404
-        except TypeError:
-            if characters is not None:
-                return characters.as_dict(), 200
-            return {
-                'message': 'Не найдено ни одного персонажа.'
-            }, 404
-        
+                       'message': 'Characters not found'
+                   }, 404
 
     @staticmethod
     def post() -> (dict, int):
@@ -75,11 +70,11 @@ class Characters(Resource):
             Character.update(character)
         except:
             return {
-              'message': 'do not created'
-            }, 400
+                       'message': 'Character not created'
+                   }, 400
         return {
-          'message': 'Success'
-        }, 200
+                   'message': 'Success'
+               }, 200
 
     @staticmethod
     def delete():
@@ -91,7 +86,7 @@ class Characters(Resource):
             Character.delete(character)
         except:
             return {
-                       'message': 'id do not found'
+                       'message': 'Id not found'
                    }, 404
         return {
                    'message': 'Success'
@@ -105,9 +100,9 @@ class Characters(Resource):
             character.update_values(args)
             character.update(character)
             return {
-                'message': 'success'
-            }, 200
+                       'message': 'Success'
+                   }, 200
         except AttributeError:
             return {
-                'message': 'do not found id'
-            }, 200
+                       'message': 'Id not found'
+                   }, 200
