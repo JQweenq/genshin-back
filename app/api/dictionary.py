@@ -27,7 +27,7 @@ patchParser.add_argument('attr', type=str, required=True)
 patchParser.add_argument('value', type=str, required=True)
 
 
-class Characters(Resource):
+class Dictionary(Resource):
 
     @staticmethod
     def get() -> (dict, int):
