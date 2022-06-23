@@ -30,9 +30,10 @@
     <main>
         {%- for method in methods.methods -%}
         <h2 id="{{ method.method.upper() }}">{{ method.method.upper() }}</h2>
-        <h3>{{ method.route }}</h3>
         <h4>{{ method.description }}</h4>
         <pre>{{ method.params }}</pre>
+        <h4>Возвращяемый объект:</h4>
+        <pre>{{ method.results }}</pre>
         {%- endfor -%}
     </main>
 </div>

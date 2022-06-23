@@ -30,7 +30,6 @@ class Base:
     def as_dict(self):
         keys = self.__dict__.keys()
         data = dict.fromkeys(keys)
-        print(keys)
 
         for key in keys:
             if not key.startswith('_'):
