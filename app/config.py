@@ -55,6 +55,7 @@ class Prod(Config):
     '''UNIX OS'''
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'admin'
     @classmethod
     def init_app(cls, app):
         print('THIS APP IS IN PROD MODE')

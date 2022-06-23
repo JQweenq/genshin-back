@@ -1,16 +1,17 @@
-import json
-
-from sqlalchemy.orm import QueryableAttribute
+from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.extensions import db
+from app.extensions import db, login
+from app.data import UserData, CharacterData, WishData, WordData, WeaponData
+from flask_login import UserMixin
 
 
-class BaseModel:
+class Base:
     __abstract__ = True
     __tablename__: str
 
     id: db.Column = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    modified_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    modified_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(),
+                                       onupdate=db.func.current_timestamp())
     created_at: db.Column = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), nullable=False)
 
     _default_fields = [
@@ -22,127 +23,37 @@ class BaseModel:
         'created_at'
     ]
 
-    def update_values(self, args: dict):
-        for key in args.keys():
-            if args[key] is not None:
-                self.__setattr__(key, args[key])
-
-    def to_dict(self, show=[], _hide=[], _path=[]):
-        # hidden columns
-        global prepend_path
-        hidden = self._hidden_fields if hasattr(self, "_hidden_fields") else []
-        default = self._default_fields if hasattr(self, "_default_fields") else []
-        default.extend(['id', 'modified_at', 'created_at'])
-
-        if not _path:
-            _path = self.__tablename__.lower()
-
-            def prepend_path(item):
-                item.lower()
-
-                if item.split(".", 1)[0] == _path:
-                    return item
-                if len(item) == 0:
-                    return item
-                if item[0] != ".":
-                    item = ".%s" % item
-                item = "%s%s" % (_path, item)
-                return item
-
-        _hide[:] = [prepend_path(x) for x in _hide]
-        show[:] = [prepend_path(x) for x in show]
-
-        columns = self.__table__.columns.keys()
-        relationships = self.__mapper__.relationships.keys()
-        properties = dir(self)
-
-        data = dict()
-
-        for key in relationships:
-            if key.startswith("_"):
-                continue
-            check = "%s.%s" % (_path, key)
-            if check in _hide or key in hidden:
-                continue
-            if check in show or key in default:
-                _hide.append(check)
-                is_list = self.__mapper__.relationships[key].uselist
-                if is_list:
-                    items = getattr(self, key)
-                    if self.__mapper__.relationships[key].query_class is not None:
-                        if hasattr(items, "all"):
-                            items = items.all()
-                    data[key] = []
-                    for item in items:
-                        data[key].append(
-                            item.to_dict(
-                                show=list(show),
-                                _hide=list(_hide),
-                                _path=("%s.%s" % (_path, key.lower())),
-                            )
-                        )
-                else:
-                    if (
-                            self.__mapper__.relationships[key].query_class is not None
-                            or self.__mapper__.relationships[key].instrument_class
-                            is not None
-                    ):
-                        item = getattr(self, key)
-                        if item is not None:
-                            data[key] = item.to_dict(
-                                show=list(show),
-                                _hide=list(_hide),
-                                _path=("%s.%s" % (_path, key.lower())),
-                            )
-                        else:
-                            data[key] = None
-                    else:
-                        data[key] = getattr(self, key)
-
-        for key in list(set(properties) - set(columns) - set(relationships)):
-            if key.startswith("_"):
-                continue
-            if not hasattr(self.__class__, key):
-                continue
-            attr = getattr(self.__class__, key)
-            if not (isinstance(attr, property) or isinstance(attr, QueryableAttribute)):
-                continue
-            check = "%s.%s" % (_path, key)
-            if check in _hide or key in hidden:
-                continue
-            if check in show or key in default:
-                val = getattr(self, key)
-                if hasattr(val, "to_dict"):
-                    data[key] = val.to_dict(
-                        show=list(show),
-                        _hide=list(_hide),
-                        _path=('%s.%s' % (_path, key.lower())),
-                    )
-                else:
-                    try:
-                        data[key] = json.loads(json.dumps(val))
-                    except:
-                        pass
+    def update_values(self, data):
+        for key in data.__dict__.keys():
+            self.__setattr__(key, getattr(data, key))
 
     def as_dict(self):
-        return {c.name: (getattr(self, c.name) if type(getattr(self, c.name)) == str or type(
-            getattr(self, c.name)) == int else None if getattr(self, c.name) is None else int(
-            getattr(self, c.name).timestamp())) for c in self.__table__.columns}
+        keys = self.__dict__.keys()
+        data = dict.fromkeys(keys)
 
-    def filter_table(table, args=None, **kwargs, ) -> list:
-        if args is not None:
-            kwargs = args
-
-        if kwargs['id'] is not None:
-            return table.query.filter(table.id == kwargs['id']).first()
-        else:
-            if kwargs['from'] is not None and kwargs['to'] is not None:
-                return table.query.filter(table.id > kwargs['from']).filter(table.id < kwargs['to']).all()
+        for key in keys:
+            if not key.startswith('_'):
+                attr = getattr(self, key)
+                if isinstance(attr, (int, str, bool, list)):
+                    data[key] = attr
+                elif isinstance(attr, datetime):
+                    data[key] = attr.timestamp()
             else:
-                if kwargs['from'] is not None:
-                    return table.query.filter(table.id > kwargs['from']).all()
-                elif kwargs['to'] is not None:
-                    return table.query.filter(table.id < kwargs['to']).all()
+                data.pop(key)
+
+        return data
+
+    def filter_table(table, id=None, _from=None, to=None) -> list:
+        if id is not None and id > 0:
+            return table.query.filter(table.id == id).first()
+        else:
+            if _from is not None and to is not None:
+                return table.query.filter(table.id > _from).filter(table.id < to).all()
+            else:
+                if _from is not None:
+                    return table.query.filter(table.id > _from).all()
+                elif to is not None:
+                    return table.query.filter(table.id < to).all()
                 else:
                     return table.query.filter().all()
 
@@ -161,24 +72,30 @@ class BaseModel:
         db.session.add(resource)
         return db.session.commit()
 
+    @staticmethod
+    def find(base, id: str):
+        return db.session.query(base).get(id)
 
-class User(db.Model, BaseModel):
-    __tablename__: str = 'USERS'
 
-    username: str = db.Column(db.String, nullable=False)
+@login.user_loader
+def load_user(id):
+    return db.session.query(User).get(id)
+
+
+class User(db.Model, Base, UserMixin):
+    __tablename__: str = 'users'
+
+    username: str = db.Column(db.String, nullable=False, unique=True)
     hash: str = db.Column(db.String(128), nullable=False)
     email: str = db.Column(db.String, nullable=False, unique=True)
     is_admin: bool = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
-
-    def __repr__(self) -> str:
-        return '<User %r:%r:%r:%r>' % (self.id, self.username, self.email, self.is_admin)
+    def __init__(self, data: UserData):
+        self.update_values(data)
 
     @property
     def password(self):
-        raise AttributeError('`password` is not a readable attribute')
+        raise AttributeError('"password" is not a readable attribute')
 
     @password.setter
     def password(self, password):
@@ -188,13 +105,13 @@ class User(db.Model, BaseModel):
         return check_password_hash(self.hash, password)
 
 
-class Character(db.Model, BaseModel):
-    __tablename__ = 'CHARACTERS'
+class Character(db.Model, Base):
+    __tablename__ = 'characters'
 
     name: str = db.Column(db.String, unique=True)
     rarity: int = db.Column(db.Integer)
-    name_en: str = db.Column(db.String, unique=True)
-    full_name: str = db.Column(db.String, unique=True)
+    name_en: str = db.Column(db.String)
+    full_name: str = db.Column(db.String)
     card: str = db.Column(db.String)
     weapon: str = db.Column(db.String)
     eye: str = db.Column(db.String(8))
@@ -202,46 +119,49 @@ class Character(db.Model, BaseModel):
     birthday: str = db.Column(db.String(10))
     region: str = db.Column(db.String)
     affiliation: str = db.Column(db.String)
-    protrait: str = db.Column(db.String)
+    portrait: str = db.Column(db.String)
     description: str = db.Column(db.String)
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
+    def __init__(self, data: CharacterData):
+        self.update_values(data)
 
-class Word(db.Model, BaseModel):
-    __tablename__ = 'DICTIONARY'
+    def __repr__(self) -> str:
+        return '<Character %r:%r:%r:%r>' % (self.id, self.name, self.rarity, self.sex)
+
+
+class Word(db.Model, Base):
+    __tablename__ = 'dictionary'
 
     word: str = db.Column(db.String, unique=True)
     translate: str = db.Column(db.String)
     subinf: str = db.Column(db.String)
     original: str = db.Column(db.String)
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
+    def __init__(self, data: WordData) -> None:
+        self.update_values(data)
 
 
+class Wish(db.Model, Base):
+    __tablename__ = 'wishes'
 
-class Wishe(db.Model, BaseModel):
-    __tablename__ = 'WISHES'
-
-    name: str = db.Column(db.String, unique=True)
+    title: str = db.Column(db.String, unique=True)
     version: str = db.Column(db.String(8))
     poster: str = db.Column(db.String)
-    rate_5 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
-    rate_4 = db.Column(db.Integer, db.ForeignKey('CHARACTERS.id'))
+    rate_5: str = db.Column(db.String)
+    rate_4: str = db.Column(db.String)
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
+    def __init__(self, data: WishData) -> None:
+        self.update_values(data)
 
 
-class Weapon(db.Model, BaseModel):
-    __tablename__ = 'WEAPONS'
+class Weapon(db.Model, Base):
+    __tablename__ = 'weapons'
 
-    name: str = db.Column(db.String, unique=True)
+    title: str = db.Column(db.String, unique=True)
     icon: str = db.Column(db.String)
     rarity: int = db.Column(db.Integer)
     damage: int = db.Column(db.Integer)
     dest: str = db.Column(db.String)
 
-    def __init__(self, args: dict) -> None:
-        self.update_values(args)
+    def __init__(self, data: WeaponData) -> None:
+        self.update_values(data)

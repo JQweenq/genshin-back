@@ -5,46 +5,37 @@
     <title>Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 <div class="wrapper">
-    <header>
+    <div class="sidebar" tabindex="-1">
+        <header>
+            {%- if is_authenticated -%}
+            <a class="btn btn-neutral" onclick="logout()">Logout</a>
+            {%- endif -%}
+            <a class="btn btn-neutral" href="login">Sign In</a>
+        </header>
         <nav>
-            <a href="login">Sign In</a>
-            <a href="register">Sigh Up</a>
-            <a href="#Characters">Characters</a>
-            <a href="#Dictionary">Dictionary</a>
-            <a href="#Wishes">Wishes</a>
-            <a href="#register">Register</a>
-            <a href="#login">Login</a>
+            {%- for key, route in routes.items() -%}
+            <a href="{{ '/' + route.href }}">{{ route.title }}</a>
+            <div class="burger">
+                {%- for method in route.methods -%}
+                <a href="{{ '/' + route.href + '#' + method.method }}">{{ method.method }}</a>
+                {%- endfor -%}
+            </div>
+            {%- endfor -%}
         </nav>
-    </header>
+    </div>
     <main>
-        <h1>https://api-genshin.herokuapp.com</h1>
-        {% for item in items %}
-            <h2 id="{{ item.title }}">{{ item.title }}</h2>
-            <h3>{{ item.url }}</h3>
-            <i><b>GET</b></i>
-            <span>{{ item.get_description }}</span>
-            <pre>{{ item.get_attrs }}</pre>
-            <i><b>POST</b></i>
-            <span>{{ item.post_description }}</span>
-            <pre>{{ item.post_attrs }}</pre>
-            <i><b>DELETE</b></i>
-            <span>{{ item.delete_description }}</span>
-            <pre>{{ item.delete_attrs }}</pre>
-            <i><b>PATCH</b></i>
-            <span>{{ item.patch_description }}</span>
-            <pre>{{ item.patch_attrs }}</pre>
-        {% endfor %}
+        {%- for method in methods.methods -%}
+        <h2 id="{{ method.method.upper() }}">{{ method.method.upper() }}</h2>
+        <h4>{{ method.description }}</h4>
+        <pre>{{ method.params }}</pre>
+        <h4>Возвращяемый объект:</h4>
+        <pre>{{ method.results }}</pre>
+        {%- endfor -%}
     </main>
-    <footer>
-        <address>
-            Contact:<br>
-            Github: <a href="https://github.com/JQweenq">JQweenq</a><br>
-            Discord: Josty#0626
-        </address>
-    </footer>
 </div>
 </body>
 </html>
