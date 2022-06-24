@@ -1,4 +1,6 @@
+import os
 import datetime
+
 
 class Config:
     __abstract__ = True
@@ -53,7 +55,7 @@ class Test(Config):
 
 class Prod(Config):
     '''UNIX OS'''
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'admin'
     @classmethod
