@@ -1,3 +1,5 @@
+
+
 def dict_as_data(dikt, data):
     for key in dikt.keys():
         data.__setattr__(key, dikt[key])
@@ -6,7 +8,7 @@ def dict_as_data(dikt, data):
 
 
 def data_as_dict(data, ignore=[]):
-    keys = data.__dict__.keys()
+    keys = vars(data).keys()
     data = dict.fromkeys(keys)
 
     for key in keys:

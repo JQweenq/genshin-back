@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludePattern pattern="api" />
+      <excludePattern pattern="main" />
+      <excludePattern pattern="models" />
+      <excludePattern pattern="static" />
+      <excludePattern pattern="tests" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.10 (genshin-back)" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\Josty\PycharmProjects\api.genshin-journey.ml\requirements.txt" />
+  </component>
+  <component name="TemplatesService">
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/app/templates" />
+      </list>
+    </option>
+  </component>
+</module>

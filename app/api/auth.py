@@ -1,61 +1,65 @@
+import re
+
+from flask import jsonify
+from flask_jwt_extended import create_access_token
 from flask_restful import Resource, reqparse
-from flask_login import login_user, logout_user
 from sqlalchemy.exc import IntegrityError
 
-from app.tables import User
+from app.api.base import status200, status401, status400
+from app.models.user import User, UserData
+from app.utils import dict_as_data
 
 regParser: reqparse.RequestParser = reqparse.RequestParser()
 
-regParser.add_argument('username', type=str, required=True, help='Username field cannot be blank.')
-regParser.add_argument('email', type=str, required=True, help='Email field cannot be blank.')
-regParser.add_argument('password', type=str, required=True, help='Password field cannot be blank.')
+regParser.add_argument('username', type=str, required=True)
+regParser.add_argument('email', type=str, required=True)
+regParser.add_argument('password', type=str, required=True)
 
 logParser: reqparse.RequestParser = reqparse.RequestParser()
 
-logParser.add_argument('email', type=str, required=True, help='Email field cannot be blank.')
-logParser.add_argument('password', type=str, required=True, help='Password field cannot be blank.')
+logParser.add_argument('username', type=str)
+logParser.add_argument('email', type=str)
+logParser.add_argument('password', type=str, required=True)
 
 
-class Registration(Resource):
+class RegistrationRoute(Resource):
 
     @staticmethod
     def post() -> (dict, int):
         args: dict = regParser.parse_args()
 
+        if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', args['email']):
+            return status400
+
         try:
-            user = User(args)
-            user.password = args['password']
+            user = User(dict_as_data(args, UserData()))
             user.add(user)
-            return {
-                       'message': 'Account created'
-                   }, 200
+            return status200
         except IntegrityError:
-            return {
-                       'message': 'Account already exists'
-                   }, 401
+            return status400
 
 
-class Login(Resource):
+class LoginRoute(Resource):
 
     @staticmethod
     def post() -> (dict, int):
         args = logParser.parse_args()
 
-        user = User.query.filter(User.email == args['email']).first()
+        if args['username']:
+            user = User.query.filter(User.username == args['username']).first()
+        elif args['email']:
+            user = User.query.filter(User.email == args['email']).first()
+        else:
+            return status400
 
-        if user is not None and \
-                user.verify_password(args['password']):
-            login_user(user)
-            return user.as_dict(), 200
-        return {
-                   'message': 'Not authorized'
-               }, 401
+        if user and user.verify_password(args['password']):
+            return jsonify(access_token=create_access_token(identity=args['username']))
+
+        return status401
 
 
-class Logout(Resource):
+class LogoutRoute(Resource):
     @staticmethod
     def post() -> (dict, int):
-        logout_user()
-        return {
-                   'message': 'Success'
-               }, 200
+        # TODO logout_user
+        return status200

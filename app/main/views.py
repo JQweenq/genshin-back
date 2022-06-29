@@ -1,11 +1,7 @@
 from app.main.docs import *
 from flask import render_template, Blueprint, redirect, url_for
-from jinja2 import Environment, FileSystemLoader
-from flask_login import current_user
 
-main: Blueprint = Blueprint('/', __name__)
-env = Environment(loader=FileSystemLoader('./app/templates/components'))
-
+main = Blueprint('/', __name__)
 
 routes = {
     'characters': characters,
@@ -20,7 +16,7 @@ routes = {
 @main.route('/index')
 @main.route('/index/<route>')
 def index(route='characters'):
-    return render_template('index.html', is_authenticated=current_user.is_authenticated, routes=routes, methods=routes[route])
+    return render_template('index.html', is_authenticated=False, routes=routes, methods=routes[route])
 
 
 @main.route('/login')

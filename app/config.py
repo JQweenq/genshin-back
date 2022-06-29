@@ -1,12 +1,11 @@
 import os
-import datetime
-
 
 class Config:
     __abstract__ = True
 
-    SQLALCHEMY_DATABASE_URI: str
-    SQLALCHEMY_TRACK_MODIFICATIONS: bool
+    SQLALCHEMY_ECHO: bool = False
+    SQLALCHEMY_DATABASE_URI: str = 'sqlite:///database.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     ENV: str
     DEBUG: bool
     TESTING: bool
@@ -21,46 +20,53 @@ class Config:
     SESSION_COOKIE_HTTPONLY: bool
     SESSION_COOKIE_SECURE: bool
     SESSION_COOKIE_SAMESITE: str
-    PERMANENT_SESSION_LIFETIME: datetime.timedelta
     SESSION_REFRESH_EACH_REQUEST: bool
     USE_X_SENDFILE: bool
-    SEND_FILE_MAX_AGE_DEFAULT: datetime.timedelta or int
     SERVER_NAME: str
     APPLICATION_ROOT: str
     PREFERRED_URL_SCHEME: str
     MAX_CONTENT_LENGTH: int
     JSON_AS_ASCII: bool
-    JSON_SORT_KEYS: bool
+    JSON_SORT_KEYS: bool = False
     JSONIFY_PRETTYPRINT_REGULAR: bool
     JSONIFY_MIMETYPE: str
     TEMPLATES_AUTO_RELOAD: bool
     EXPLAIN_TEMPLATE_LOADING: bool
     MAX_COOKIE_SIZE: int
+    JWT_SECRET_KEY: str = 'admin'
 
 
 class Dev(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
+    SECRET_KEY = 'admin'
+    DEBUG = True
 
     @classmethod
     def init_app(cls, app):
         print('THIS APP IS IN DEV MODE')
+        print(app.url_map)
 
 
 class Test(Config):
+    SECRET_KEY = 'admin'
+    TESTING = True
+
     @classmethod
     def init_app(cls, app):
         print('THIS APP IS IN TEST MODE')
+        print(app.url_map)
 
 
 class Prod(Config):
-    '''UNIX OS'''
+    """UNIX OS"""
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///database.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'admin'
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'admin')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'admin')
+
     @classmethod
     def init_app(cls, app):
         print('THIS APP IS IN PROD MODE')
+
 
 config = {
     'dev': Dev,
