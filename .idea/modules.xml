@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/api.genshin-journey.ml.iml" filepath="$PROJECT_DIR$/.idea/api.genshin-journey.ml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../genshin-back/.idea/genshin-back.iml" filepath="$PROJECT_DIR$/../genshin-back/.idea/genshin-back.iml" />
     </modules>
   </component>
 </project>

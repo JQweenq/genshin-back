@@ -1,10 +1,8 @@
 from app.main.docs import *
 from flask import render_template, Blueprint, redirect, url_for
-from jinja2 import Environment, FileSystemLoader
 from flask_login import current_user
 
-main: Blueprint = Blueprint('/', __name__)
-env = Environment(loader=FileSystemLoader('./app/templates/components'))
+main = Blueprint('/', __name__)
 
 
 routes = {
