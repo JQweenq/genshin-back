@@ -1,42 +1,33 @@
-from app.api.base import BaseResource, baseGetParser, basePatchParser, baseDeleteParser, status200, status400, status404
+from app.api.base import BaseResource, status200, status400, status404
 from app.models.character import Character
-from app.models.wish import Wish, WishData
-from app.utils import dict_as_data
+from app.models.wish import Wish
+from app.data_models.wish import WishData
+from app.utils.funcs import dict_as_data
+from app.utils.datas import *
+from flask import request
 
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
-
-postParser: reqparse.RequestParser = reqparse.RequestParser()
-
-postParser.add_argument('title', type=str)
-postParser.add_argument('version', type=str)
-postParser.add_argument('poster', type=str)
-postParser.add_argument('rate_5', type=int)
-postParser.add_argument('rate_4', type=int, action='append')
 
 
 class WishesRoute(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        args = baseGetParser.parse_args()
+        args: GET = request.parse()
 
-        id = args['id']
-        start = args['start']
-        end = args['end']
-
-        if id:
-            wishes = [Wish.find_entity(Wish, id)]
-        elif start and end:
-            wishes = Wish.find_entities(Wish, start, end)
-        elif start:
-            wishes = Wish.find_entities_starting_with(Wish, start)
-        elif end:
-            wishes = Wish.find_entities_starting_with(Wish, end)
+        if args.id is not None:
+            wishes = [Wish.find_entity(Wish, args.id)]
+        elif args.start is not None and end is not None:
+            wishes = Wish.find_entities(Wish, args.start, args.end)
+        elif args.start is not None:
+            wishes = Wish.find_entities_starting_with(Wish, args.start)
+        elif args.end is not None:
+            wishes = Wish.find_entities_starting_with(Wish, args.end)
         else:
             wishes = Wish.get_all_entities(Wish)
 
-        if wishes == [] or not wishes:
+        if wishes is None:
             return status404
 
         if isinstance(wishes, list) and len(wishes) != 0:
@@ -65,12 +56,9 @@ class WishesRoute(Resource):
 
     @staticmethod
     def post() -> (dict, int):
-        args = postParser.parse_args()
+        args: POST = request.parse(['title'])
 
-        rate5 = args.pop('rate_5')
-        rate4 = args.pop('rate_4')
-
-        entity = Wish(dict_as_data(args, WishData()))
+        entity = Wish(args)
         # todo create relationship
         # if not rate5:
         #     if character5 := Character.query.filter(Character.id == rate5).first():
@@ -92,12 +80,12 @@ class WishesRoute(Resource):
 
     @staticmethod
     def delete():
-        args: dict = baseDeleteParser.parse_args()
+        args: DELETE = request.parse(['id'])
 
-        return BaseResource.delete(Wish, args['id'])
+        return BaseResource.delete(Wish, args)
 
     @staticmethod
     def patch():
-        args: dict = basePatchParser.parse_args()
+        args: PATCH = request.parse(['id', 'attr', 'value'])
 
-        return BaseResource.patch(Wish, WishData, args['id'], args['attr'], args['value'])
+        return BaseResource.patch(Wish, WishData, args)

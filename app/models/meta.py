@@ -6,12 +6,6 @@ from app.extensions import db
 from app.models.utils import CRUD
 
 
-@dataclass
-class MetaData:
-    title: str = None
-    content: str = None
-
-
 class Meta(CRUD, db.Model):
     __tablename__ = 'meta'
 

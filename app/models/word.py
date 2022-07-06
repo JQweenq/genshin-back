@@ -7,14 +7,6 @@ from app.extensions import db
 from app.models.utils import CRUD
 
 
-@dataclass()
-class WordData:
-    word: str = None
-    translate: str = None
-    subinf: str = None
-    original: str = None
-
-
 class Word(CRUD, db.Model):
     __tablename__ = 'dictionary'
 

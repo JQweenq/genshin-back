@@ -2,10 +2,11 @@ import os
 
 from sqlalchemy.exc import IntegrityError
 from app import create_app
-from app.models.user import User, UserData
+from app.models.user import User
+from app.data_models.user import UserData
 from app.extensions import db
 
-app = create_app('test')
+app = create_app('prod')
 db.app = app
 
 db.create_all()

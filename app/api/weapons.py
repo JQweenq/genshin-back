@@ -1,38 +1,33 @@
-from flask_restful import Resource, reqparse
-from app.models.weapon import Weapon, WeaponData
-from app.api.base import BaseResource, baseGetParser, basePatchParser, baseDeleteParser
-
-postParser: reqparse.RequestParser = reqparse.RequestParser()
-
-postParser.add_argument('title', type=str, required=True)
-postParser.add_argument('icon', type=str)
-postParser.add_argument('rarity', type=int)
-postParser.add_argument('damage', type=int)
-postParser.add_argument('dest', type=str)
+from flask_restful import Resource
+from flask import request
+from app.models.weapon import Weapon
+from app.data_models.weapon import WeaponData
+from app.api.base import BaseResource
+from app.utils.datas import *
 
 
 class WeaponsRoute(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        args: dict = baseGetParser.parse_args()
+        args: GET = request.parse_args()
 
-        return BaseResource.get(Weapon, args['id'], args['start'], args['end'])
+        return BaseResource.get(Weapon, args)
 
     @staticmethod
     def post() -> (dict, int):
-        args = postParser.parse_args()
+        args: POST = request.parse(['title'])
 
         return BaseResource.post(Weapon, WeaponData, args)
 
     @staticmethod
     def delete():
-        args: dict = baseDeleteParser.parse_args()
+        args: DELETE = request.parse(['id'])
 
-        return BaseResource.delete(Weapon, args['id'])
+        return BaseResource.delete(Weapon, args)
 
     @staticmethod
     def patch():
-        args: dict = basePatchParser.parse_args()
+        args: PATCH = request.parse(['id', 'attr', 'value'])
 
-        return BaseResource.patch(Weapon, WeaponData, args['id'], args['attr'], args['value'])
+        return BaseResource.patch(Weapon, WeaponData, args)

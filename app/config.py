@@ -1,10 +1,13 @@
 import os
 
+basedir = os.getcwd()
+
+
 class Config:
     __abstract__ = True
 
     SQLALCHEMY_ECHO: bool = False
-    SQLALCHEMY_DATABASE_URI: str = 'sqlite:///database.db'
+    SQLALCHEMY_DATABASE_URI: str = f'sqlite:///{os.path.join(basedir, "database.db")}'
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     ENV: str
     DEBUG: bool
@@ -59,7 +62,7 @@ class Test(Config):
 
 class Prod(Config):
     """UNIX OS"""
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///database.db')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "database.db")}')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'admin')
     SECRET_KEY = os.getenv('SECRET_KEY', 'admin')
 

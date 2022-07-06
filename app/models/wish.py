@@ -8,13 +8,6 @@ from app.extensions import db
 from app.models.utils import CRUD
 
 
-@dataclass()
-class WishData:
-    title: str = None
-    version: str = None
-    poster: str = None
-
-
 class Wish(CRUD, db.Model):
     __tablename__ = 'wishes'
 

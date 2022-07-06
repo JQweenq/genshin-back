@@ -1,13 +1,14 @@
-
-
 def dict_as_data(dikt, data):
     for key in dikt.keys():
-        data.__setattr__(key, dikt[key])
+        setattr(data, key, dikt[key])
 
     return data
 
 
-def data_as_dict(data, ignore=[]):
+def data_as_dict(data, ignore=None):
+    if ignore is None:
+        ignore = []
+
     keys = vars(data).keys()
     data = dict.fromkeys(keys)
 

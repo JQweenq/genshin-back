@@ -7,15 +7,6 @@ from app.extensions import db
 from app.models.utils import CRUD
 
 
-@dataclass()
-class WeaponData:
-    title: str = None
-    icon: str = None
-    rarity: int = None
-    damage: int = None
-    dest: str = None
-
-
 class Weapon(CRUD, db.Model):
     __tablename__ = 'weapons'
 

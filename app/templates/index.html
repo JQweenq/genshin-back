@@ -5,23 +5,20 @@
     <title>Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 <div class="wrapper">
     <div class="sidebar" tabindex="-1">
-        <header>
-            {%- if is_authenticated -%}
-            <a class="btn btn-neutral" onclick="logout()">Logout</a>
-            {%- endif -%}
-            <a class="btn btn-neutral" href="login">Sign In</a>
-        </header>
         <nav>
             {%- for key, route in routes.items() -%}
-            <a href="{{ '/' + route.href }}">{{ route.title }}</a>
+            <a href="{{ '/' + route.href }}">{{route.icon | safe}}
+                <span class="text__link">{{ route.title }}</span>
+            </a>
             <div class="burger">
                 {%- for method in route.methods -%}
-                <a href="{{ '/' + route.href + '#' + method.method }}">{{ method.method }}</a>
+                <a href="{{ '/' + route.href + '#' + method.method }}">{{method.icon | safe}}
+                    <span class="text__link">{{ method.method }}</span>
+                </a>
                 {%- endfor -%}
             </div>
             {%- endfor -%}

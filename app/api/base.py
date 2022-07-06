@@ -2,7 +2,8 @@ from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import IntegrityError
 
 from app.models.utils import CRUD
-from app.utils import dict_as_data
+from app.utils.funcs import dict_as_data
+from app.utils.datas import *
 from flask import Response
 
 status404 = Response("Not found", status=404)
@@ -10,34 +11,18 @@ status401 = Response("Not authorized", status=401)
 status400 = Response("Bad request", status=400)
 status200 = Response("Ok", status=200)
 
-baseGetParser = RequestParser()
-
-baseGetParser.add_argument('id', type=int)
-baseGetParser.add_argument('start', type=int)
-baseGetParser.add_argument('end', type=int)
-
-baseDeleteParser = RequestParser()
-
-baseDeleteParser.add_argument('id', type=int, required=True)
-
-basePatchParser = RequestParser()
-
-basePatchParser.add_argument('id', type=int, required=True)
-basePatchParser.add_argument('attr', type=str, required=True)
-basePatchParser.add_argument('value', type=str, required=True)
-
 
 class BaseResource:
     @staticmethod
-    def get(obj: CRUD, id: int = None, start: int = None, end: int = None):
-        if id:
+    def get(obj: CRUD, args: GET):
+        if args.id is not None:
             response = obj.find_entity(obj, id)
-        elif start and end:
+        elif args.start is not None and args.end is not None:
             response = obj.find_entities(obj, start, end)
-        elif start:
+        elif args.start is not None:
             response = obj.find_entities_starting_with(obj, start)
-        elif end:
-            response = obj.find_entities_starting_with(obj, end)
+        elif args.end is not None:
+            response = obj.find_entities_ending_with(obj, end)
         else:
             response = obj.get_all_entities(obj)
 
@@ -51,28 +36,28 @@ class BaseResource:
             return status404
 
     @staticmethod
-    def post(obj: CRUD, data, args):
+    def post(obj: CRUD, args):
         try:
-            obj.update(obj(dict_as_data(args, data())))
+            obj.update(obj(args))
         except IntegrityError:
             return status400
 
         return status200
 
     @staticmethod
-    def delete(obj: CRUD, id):
-        if entity := obj.find_entity(obj, id):
+    def delete(obj: CRUD, args: DELETE):
+        if (entity := obj.find_entity(obj, args.id)) is not None:
             obj.delete(entity)
             return status200
 
         return status404
 
     @staticmethod
-    def patch(obj: CRUD, data, id: int, attr: str, value: str):
-        if attr not in vars(data()).keys():
+    def patch(obj: CRUD, data, args: PATCH):
+        if args.attr not in vars(data()).keys():
             return status400
-        if entity := obj.find_entity(obj, id):
-            entity.__setattr__(attr, value)
+        if (entity := obj.find_entity(obj, args.id)) is not None:
+            entity.__setattr__(args.attr, args.value)
             entity.update(entity)
             return status200
 

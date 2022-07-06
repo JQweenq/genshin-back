@@ -1,48 +1,38 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_restful import Resource, reqparse
+# from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_restful import Resource
+from flask import request
 
-from app.models.meta import Meta, MetaData
-from app.api.base import BaseResource, status404, status200, basePatchParser
-
-parser = reqparse.RequestParser()
-
-parser.add_argument('attr', type=str, required=True)
-
-postParser = reqparse.RequestParser()
-
-postParser.add_argument('attr', type=str, required=True)
-postParser.add_argument('value', type=str, required=True)
-
-patchParser = parser.copy()
-
-patchParser.add_argument('value', type=str, required=True)
+from app.models.meta import Meta
+from app.data_models.meta import MetaData
+from app.utils.datas import *
+from app.api.base import BaseResource, status404, status200
 
 
 class MetaRoute(Resource):
     @staticmethod
     def get():
-        args: dict = parser.parse_args()
+        args: GET = request.parse()
 
-        if not Meta.get_by_attr(Meta, args['attr']):
+        if (result := Meta.get_by_attr(Meta, args.attr)) is None:
             return status404
 
-        return Meta.get_by_attr(Meta, args['attr']).as_dict()
+        return result.as_dict()
 
     @staticmethod
     # @jwt_required()
     def post():
         # current_user = get_jwt_identity()
-        args = postParser.parse_args()
+        args: POST = request.parse(['attr', 'value'])
 
-        return BaseResource.post(Meta, MetaData, args)
+        return BaseResource.post(Meta, args)
 
     @staticmethod
     # @jwt_required()
     def delete():
         # current_user = get_jwt_identity()
-        args: dict = parser.parse_args()
+        args: DELETE = parser.parse_args(['attr'])
 
-        if entity := Meta.get_by_attr(Meta, args['attr']):
+        if entity := Meta.get_by_attr(Meta, args.attr):
             Meta.delete(entity)
             return status200
         else:
@@ -52,10 +42,10 @@ class MetaRoute(Resource):
     # @jwt_required()
     def patch():
         # current_user = get_jwt_identity()
-        args: dict = patchParser.parse_args()
+        args: dict = patchParser.parse_args(['attr', 'value'])
 
-        if entity := Meta.get_by_attr(Meta, args['attr']):
-            entity.__setattr__('value', args['value'])
+        if entity := Meta.get_by_attr(Meta, args.attr):
+            entity.__setattr__('value', args.value)
             entity.update(entity)
             return status200
         else:

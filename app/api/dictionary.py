@@ -1,37 +1,33 @@
-from flask_restful import Resource, reqparse
-from app.models.word import Word, WordData
-from app.api.base import BaseResource, baseGetParser, basePatchParser, baseDeleteParser
-
-postParser: reqparse.RequestParser = reqparse.RequestParser()
-
-postParser.add_argument('word', type=str)
-postParser.add_argument('translate', type=str)
-postParser.add_argument('subinf', type=str)
-postParser.add_argument('original', type=str)
+from flask_restful import Resource
+from flask import request
+from app.models.word import Word
+from app.data_models.word import WordData
+from app.api.base import BaseResource
+from app.utils.datas import *
 
 
 class DictionaryRoute(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        args: dict = baseGetParser.parse_args()
+        args: GET = request.parse()
 
-        return BaseResource.get(Word, args['id'], args['start'], args['end'])
+        return BaseResource.get(Word, args)
 
     @staticmethod
     def post() -> (dict, int):
-        args = postParser.parse_args()
+        args: POST = request.parse(['word'])
 
-        return BaseResource.post(Word, WordData, args)
+        return BaseResource.post(Word, args)
 
     @staticmethod
     def delete():
-        args: dict = baseDeleteParser.parse_args()
+        args: DELETE = request.parse(['id'])
 
-        return BaseResource.delete(Word, args['id'])
+        return BaseResource.delete(Word, args)
 
     @staticmethod
     def patch():
-        args: dict = basePatchParser.parse_args()
+        args: PATCH = request.parse(['id', 'attr', 'value'])
 
-        return BaseResource.patch(Word, WordData, args['id'], args['attr'], args['value'])
+        return BaseResource.patch(Word, WordData, args)

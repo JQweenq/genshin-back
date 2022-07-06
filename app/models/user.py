@@ -8,14 +8,6 @@ from app.extensions import db
 from app.models.utils import CRUD
 
 
-@dataclass()
-class UserData:
-    username: str = None
-    password: str = None
-    email: str = None
-    is_admin: bool = False
-
-
 class User(CRUD, db.Model):
     __tablename__ = 'users'
 
