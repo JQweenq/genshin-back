@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 from typing import List
+from dataclasses import dataclass
 from app.data_models.user import UserData
 from app.data_models.character import CharacterData
 from app.data_models.word import WordData
@@ -14,6 +14,7 @@ class GET:
     id: int = None
     start: int = None
     end: int = None
+    ignore: list = None
     _lists: List[str] = None
     _lists_is_empty: bool = True
 

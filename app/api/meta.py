@@ -16,7 +16,7 @@ class MetaRoute(Resource):
         if (result := Meta.get_by_attr(Meta, args.attr)) is None:
             return status404
 
-        return result.as_dict()
+        return result.as_dict(args.ignore)
 
     @staticmethod
     # @jwt_required()

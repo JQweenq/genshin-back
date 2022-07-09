@@ -16,22 +16,22 @@ class BaseResource:
     @staticmethod
     def get(obj: CRUD, args: GET):
         if args.id is not None:
-            response = obj.find_entity(obj, id)
+            response = obj.find_entity(obj, args.id)
         elif args.start is not None and args.end is not None:
-            response = obj.find_entities(obj, start, end)
+            response = obj.find_entities(obj, args.start, args.end)
         elif args.start is not None:
-            response = obj.find_entities_starting_with(obj, start)
+            response = obj.find_entities_starting_with(obj, args.start)
         elif args.end is not None:
-            response = obj.find_entities_ending_with(obj, end)
+            response = obj.find_entities_ending_with(obj, args.end)
         else:
             response = obj.get_all_entities(obj)
 
         if isinstance(response, list) and len(response) != 0:
-            return [item.as_dict() for item in response]
+            return [item.as_dict(args.ignore) for item in response]
         elif isinstance(response, list) and len(response) == 0:
             return status404
         elif response:
-            return response.as_dict()
+            return response.as_dict(args.ignore)
         else:
             return status404
 

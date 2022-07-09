@@ -17,7 +17,7 @@ class WishesRoute(Resource):
         args: GET = request.parse()
 
         if args.id is not None:
-            wishes = [Wish.find_entity(Wish, args.id)]
+            wishes = Wish.find_entity(Wish, args.id)
         elif args.start is not None and end is not None:
             wishes = Wish.find_entities(Wish, args.start, args.end)
         elif args.start is not None:
@@ -31,11 +31,11 @@ class WishesRoute(Resource):
             return status404
 
         if isinstance(wishes, list) and len(wishes) != 0:
-            return [item.as_dict() for item in wishes]
+            return [item.as_dict(args.ignore) for item in wishes]
         elif isinstance(wishes, list) and len(wishes) == 0:
             return status404
         elif wishes:
-            return wishes.as_dict()
+            return wishes.as_dict(args.ignore)
         else:
             return status404
 

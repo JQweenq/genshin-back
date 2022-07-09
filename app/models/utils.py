@@ -17,8 +17,9 @@ class CRUD:
             val = getattr(data, key)
             self.__setattr__(key, val)
 
-    def as_dict(self, ignore=None) -> dict:
-        ignore = ignore or self.ignore
+    def as_dict(self, ignore: list | None = None) -> dict:
+        if ignore is None:
+            ignore = self.ignore
 
         keys = vars(self).keys()
         _dict = dict.fromkeys(keys)
