@@ -1,9 +1,9 @@
 from flask import request
 from flask_restful import Resource
-from app.models.character import Character
-from app.data_models.character import CharacterData
-from app.utils.datas import *
+
 from app.api.base import BaseResource
+from app.models.character import Character
+from app.utils.datas import *
 
 
 class CharactersRoute(Resource):
@@ -16,7 +16,7 @@ class CharactersRoute(Resource):
 
     @staticmethod
     def post() -> (dict, int):
-        args: POST = request.parse(['name'])
+        args: POST = request.parse(['name', 'name_en'])
 
         return BaseResource.post(Character, args)
 

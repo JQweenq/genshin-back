@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy import Column, String, TIMESTAMP, Integer
 from sqlalchemy.sql.functions import current_timestamp
 

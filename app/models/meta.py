@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy.sql.functions import current_timestamp
 
 from app.extensions import db
@@ -13,8 +11,6 @@ class Meta(CRUD, db.Model):
     value = db.Column(db.String, nullable=False)
     modified_at: db.Column = db.Column(db.TIMESTAMP, default=current_timestamp(), onupdate=current_timestamp())
     created_at = db.Column(db.TIMESTAMP, default=current_timestamp(), nullable=False)
-
-
 
     @staticmethod
     def get_by_attr(base, attr: str):

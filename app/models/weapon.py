@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy import Column, String, Integer, TIMESTAMP
 from sqlalchemy.sql.functions import current_timestamp
 
@@ -12,6 +10,7 @@ class Weapon(CRUD, db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, unique=True, nullable=False)
+    title_en = Column(String, unique=True, nullable=False)
     icon = Column(String)
     rarity = Column(Integer)
     damage = Column(Integer)

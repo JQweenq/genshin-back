@@ -1,13 +1,10 @@
-from app.api.base import BaseResource, status200, status400, status404
-from app.models.character import Character
-from app.models.wish import Wish
-from app.data_models.wish import WishData
-from app.utils.funcs import dict_as_data
-from app.utils.datas import *
-from flask import request
-
+from flask import request, abort
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
+
+from app.api.base import BaseResource
+from app.models.wish import Wish
+from app.utils.datas import *
 
 
 class WishesRoute(Resource):
@@ -18,7 +15,7 @@ class WishesRoute(Resource):
 
         if args.id is not None:
             wishes = Wish.find_entity(Wish, args.id)
-        elif args.start is not None and end is not None:
+        elif args.start is not None and args.end is not None:
             wishes = Wish.find_entities(Wish, args.start, args.end)
         elif args.start is not None:
             wishes = Wish.find_entities_starting_with(Wish, args.start)
@@ -28,16 +25,16 @@ class WishesRoute(Resource):
             wishes = Wish.get_all_entities(Wish)
 
         if wishes is None:
-            return status404
+            return abort(404)
 
         if isinstance(wishes, list) and len(wishes) != 0:
             return [item.as_dict(args.ignore) for item in wishes]
         elif isinstance(wishes, list) and len(wishes) == 0:
-            return status404
+            return abort(404)
         elif wishes:
             return wishes.as_dict(args.ignore)
         else:
-            return status404
+            return abort(404)
 
         # for wish in wishes:
         #     wish_dict: dict = wish.as_dict()
@@ -56,7 +53,7 @@ class WishesRoute(Resource):
 
     @staticmethod
     def post() -> (dict, int):
-        args: POST = request.parse(['title'])
+        args: POST = request.parse(['title', 'title_en'])
 
         entity = Wish(args)
         # todo create relationship
@@ -75,8 +72,8 @@ class WishesRoute(Resource):
         try:
             Wish.update(entity)
         except IntegrityError:
-            return status400
-        return status200
+            return abort(400)
+        return Response(status=200)
 
     @staticmethod
     def delete():

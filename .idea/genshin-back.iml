@@ -3,11 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
-      <excludePattern pattern="api" />
-      <excludePattern pattern="main" />
-      <excludePattern pattern="models" />
-      <excludePattern pattern="static" />
-      <excludePattern pattern="tests" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (genshin-back)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

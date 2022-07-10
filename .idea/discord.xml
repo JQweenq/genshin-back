@@ -4,6 +4,6 @@
     <option name="show" value="PROJECT_FILES" />
     <option name="nameOverrideEnabled" value="true" />
     <option name="nameOverrideText" value="genshin-back" />
-    <option name="description" value="" />
+    <option name="description" value="Backend for genshin-journey.ml and Genshin(apk)" />
   </component>
 </project>

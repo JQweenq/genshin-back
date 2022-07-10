@@ -10,13 +10,13 @@ class WeaponsRoute(Resource):
 
     @staticmethod
     def get() -> (dict, int):
-        args: GET = request.parse_args()
+        args: GET = request.parse()
 
         return BaseResource.get(Weapon, args)
 
     @staticmethod
     def post() -> (dict, int):
-        args: POST = request.parse(['title'])
+        args: POST = request.parse(['title', 'title_en'])
 
         return BaseResource.post(Weapon, WeaponData, args)
 

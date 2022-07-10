@@ -1,15 +1,8 @@
-from flask_restful.reqparse import RequestParser
+from flask import abort, Response
 from sqlalchemy.exc import IntegrityError
 
 from app.models.utils import CRUD
-from app.utils.funcs import dict_as_data
 from app.utils.datas import *
-from flask import Response
-
-status404 = Response("Not found", status=404)
-status401 = Response("Not authorized", status=401)
-status400 = Response("Bad request", status=400)
-status200 = Response("Ok", status=200)
 
 
 class BaseResource:
@@ -27,38 +20,38 @@ class BaseResource:
             response = obj.get_all_entities(obj)
 
         if isinstance(response, list) and len(response) != 0:
-            return [item.as_dict(args.ignore) for item in response]
+            return [item.as_dict(args.ignore, args.only) for item in response]
         elif isinstance(response, list) and len(response) == 0:
-            return status404
+            return abort(404)
         elif response:
-            return response.as_dict(args.ignore)
+            return response.as_dict(args.ignore, args.only)
         else:
-            return status404
+            return abort(404)
 
     @staticmethod
     def post(obj: CRUD, args):
         try:
             obj.update(obj(args))
         except IntegrityError:
-            return status400
+            return abort(400)
 
-        return status200
+        return Response(status=200)
 
     @staticmethod
     def delete(obj: CRUD, args: DELETE):
         if (entity := obj.find_entity(obj, args.id)) is not None:
             obj.delete(entity)
-            return status200
+            return Response(status=200)
 
-        return status404
+        return abort(404)
 
     @staticmethod
     def patch(obj: CRUD, data, args: PATCH):
         if args.attr not in vars(data()).keys():
-            return status400
+            return abort(400)
         if (entity := obj.find_entity(obj, args.id)) is not None:
             entity.__setattr__(args.attr, args.value)
             entity.update(entity)
-            return status200
+            return Response(status=200)
 
-        return status404
+        return abort(404)

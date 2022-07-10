@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy import Column, String, Boolean, Integer, TIMESTAMP
 from sqlalchemy.sql.functions import current_timestamp
 from werkzeug.security import generate_password_hash, check_password_hash

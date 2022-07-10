@@ -1,13 +1,21 @@
 from datetime import datetime
+from types import NoneType
+from typing import Any
+
 from app.extensions import db
+
+
+def cast_to_json_type(var: Any) -> int | float | str | bool | list | None:
+    if isinstance(var, (int, float, str, bool, list, NoneType)):
+        return var
+    elif isinstance(var, datetime):
+        return var.timestamp()
+    else:
+        raise TypeError("Type is not defined")
 
 
 class CRUD:
     db = db
-
-    ignore = [
-        'created_at'
-    ]
 
     def __init__(self, data):
         self.update_values(data)
@@ -17,22 +25,27 @@ class CRUD:
             val = getattr(data, key)
             self.__setattr__(key, val)
 
-    def as_dict(self, ignore: list | None = None) -> dict:
+    def as_dict(self, ignore: list[str] | None = None, only: list[str] | None = None) -> dict:
         if ignore is None:
-            ignore = self.ignore
+            ignore = []
+
+        if only is None:
+            only = []
 
         keys = vars(self).keys()
         _dict = dict.fromkeys(keys)
 
         for key in keys:
-            if key not in ignore and not key.startswith('_'):
-                attr = getattr(self, key)
-                if isinstance(attr, (int, str, bool, list)):
-                    _dict[key] = attr
-                elif isinstance(attr, datetime):
-                    _dict[key] = attr.timestamp()
-            else:
-                _dict.pop(key)  # delete key if ignoring
+            if len(only) != 0:  # if only is not empty get keys else check ignore keys
+                if key in only and not key.startswith('_'):
+                    _dict[key] = cast_to_json_type(getattr(self, key))  # set value
+                else:
+                    _dict.pop(key)  # delete key if ignoring
+            else:  # check ignore keys
+                if key not in ignore and not key.startswith('_'):
+                    _dict[key] = cast_to_json_type(getattr(self, key))  # set value
+                else:
+                    _dict.pop(key)  # delete key if ignoring
 
         return _dict
 

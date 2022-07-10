@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy import Column, String, Integer, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import current_timestamp
@@ -14,13 +12,13 @@ class Character(CRUD, db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
     rarity = Column(Integer)
-    name_en = Column(String)
+    name_en = Column(String, unique=True, nullable=False)
     full_name = Column(String)
     card = Column(String)
     weapon = Column(String)
-    eye = Column(String(8))
-    sex = Column(String(8))
-    birthday = Column(String(10))
+    eye = Column(String(16))
+    sex = Column(String(16))
+    birthday = Column(String(16))
     region = Column(String)
     affiliation = Column(String)
     portrait = Column(String)
@@ -30,7 +28,3 @@ class Character(CRUD, db.Model):
 
     wish_5 = relationship("WishCharacterFiveAssociation", back_populates="character", uselist=False)
     wish_4 = relationship("WishCharacterFourAssociation", back_populates="character")
-
-    # rate_5 = relationship('Wish', secondary=rate_five_association, backref="wish_rate%5")  # character to wish as many to many
-    # rate_4 = relationship('Wish', secondary=rate_four_association,
-    #                       backref='wishes_rate4')  # wish to characters as many to many
