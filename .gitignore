@@ -4,3 +4,5 @@ pip-log.txt
 .env
 *.db
 *.sql
+env/
+
